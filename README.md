@@ -13,9 +13,9 @@ python setup.py bdist_rpm
 Use pip and the wheel file to install the package. E.g.
 ```bash
 cd dist
-pip install eos_py_utils-0.1-py3-none-any.whl
+pip install eos-0.1-py3-none-any.whl
 ```
 Use pip to uninstall the package
 ```bash
-pip uninstall eos_py_utils
+pip uninstall eos
 ```
