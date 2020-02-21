@@ -32,7 +32,7 @@ class Cipher:
     """
 
     @staticmethod
-    def encrypt(self, key: bytes, data: bytes) -> bytes:
+    def encrypt(key: bytes, data: bytes) -> bytes:
         """
         Performs a symmetric encryption of the provided data with the provided key
         """
@@ -40,7 +40,7 @@ class Cipher:
         return Fernet(key).encrypt(data)
 
     @staticmethod
-    def decrypt(self, key: bytes, data: bytes) -> bytes:
+    def decrypt(key: bytes, data: bytes) -> bytes:
         """
         Performs a symmetric decryption of the provided data with the provided key
         """
