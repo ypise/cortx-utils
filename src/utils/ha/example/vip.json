@@ -15,7 +15,7 @@
                 "predecessors" : ["CsmWeb"],
                 "colocation" : ["CsmWeb"],
                 "relation" : []
-            }
+            },
             "ha": {
                 "mode": "active_passive",
                 "location": {
