@@ -24,10 +24,10 @@ with open('LICENSE', 'r') as lf:
 with open('README.md', 'r') as rf:
     long_description = rf.read()
 
-setup(name='eos',
+setup(name='eos-py-utils',
       version='0.1',
       url='http://gitlab.mero.colo.seagate.com/eos/py-utils',
-      license=license,
+      license='Seagate',
       author='Alexander Voronov',
       author_email='alexander.voronov@seagate.com',
       description='Common Python utilities for EOS',
