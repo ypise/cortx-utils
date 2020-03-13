@@ -25,7 +25,7 @@ with open('README.md', 'r') as rf:
     long_description = rf.read()
 
 setup(name='eos-py-utils',
-      version='0.1',
+      version='0.2',
       url='http://gitlab.mero.colo.seagate.com/eos/py-utils',
       license='Seagate',
       author='Alexander Voronov',
@@ -33,6 +33,9 @@ setup(name='eos-py-utils',
       description='Common Python utilities for EOS',
       package_dir={'eos': 'src'},
       packages=['eos', 'eos.utils', 'eos.utils.security'],
+      package_data={
+        'eos': ['py.typed'],
+      },
       long_description=long_description,
       zip_safe=False,
       python_requires='>=3.6.8',
