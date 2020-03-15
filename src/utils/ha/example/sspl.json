@@ -12,7 +12,7 @@
                 "predecessors" : ["RabbitMQ"],
                 "colocation" : ["RabbitMQ"],
                 "relation" : []
-            }
+            },
             "ha": {
                 "mode": "master_slave",
                 "clones" : {

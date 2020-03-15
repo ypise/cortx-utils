@@ -13,7 +13,6 @@
 #
 # 2. Names, e.g. "Component" and "Resource" names are case sensitive. 
 #
-
 {
     # Component:
     # This is equivalent to EOS components, e.g. csm, sspl, etc.
@@ -81,7 +80,7 @@
                 "predecessors" : [ "<resource>", "<resource>" ],
 
                 # Colocation:
-                # List of resources which are not dependent, but
+                # List of resources which are dependent and on same node.
                 # all resource in colocation runs on the same node.
                 # "colocation": ["elasticsearch", "kibana"]
                 "colocation" : [ "<resource>", "<resource>" ],
@@ -137,8 +136,8 @@
                     # Example:
                     # "node1": "5000",
                     # "node2": "100"
-                    "<hostname1>": "<priority1>",
-                    "<hostname2>": "<priority2>"
+                    "$node1": "<priority1>",
+                    "$node2": "<priority2>"
                 }
             }
         }

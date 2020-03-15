@@ -16,7 +16,7 @@
             "ha": {
                 "mode": "active_active",
                 "clones" : {
-                    "active": [ 1, 2],
+                    "active": [ 1, 2]
                 },
                 "location": {
                     "node1": "INFINITY",

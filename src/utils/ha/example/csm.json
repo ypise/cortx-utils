@@ -9,9 +9,9 @@
                 "timeouts": [ "20s", "20s", "20s" ]
             },
             "dependencies": {
-                "predecessors" : [ "elasticsearch", "kibana" ],
-                "colocation" : [ "elasticsearch", "kibana" ],
-                "relation" : [ "statsd" ]
+                "predecessors" : [ "Elasticsearch", "Kibana" ],
+                "colocation" : [ "Elasticsearch", "Kibana" ],
+                "relation" : [ "Statsd" ]
             },
             "ha": {
                 "mode": "active_passive",
