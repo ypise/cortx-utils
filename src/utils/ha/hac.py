@@ -22,8 +22,8 @@ import os
 import sys
 import traceback
 import argparse
-import pathlib
 from datetime import datetime
+from eos.utils.schema.conf import Conf
 
 def usage():
     return """
@@ -47,9 +47,10 @@ $ hac --generate compiled.json --output eos_pcs.sh --target pcs
 
 
 if __name__ == '__main__':
-    sys.path.append(os.path.join(os.path.dirname(pathlib.Path(__file__)), '..'))
+    sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
     from ha.compile import Compiler
     from ha import generate
+    from ha import const
 
     provider = {
         "pcs": generate.PCSGenerator,
@@ -57,6 +58,7 @@ if __name__ == '__main__':
     }
 
     try:
+        Conf.init()
         argParser = argparse.ArgumentParser(
             usage = "%(prog)s\n\n" +  usage(),
             formatter_class = argparse.RawDescriptionHelpFormatter)
@@ -87,7 +89,7 @@ if __name__ == '__main__':
             com.create_script()
     except Exception as e:
         #TODO: print traceback error properly
-        with open("/tmp/hac.log", "a") as log:
+        with open(const.HAC_LOG, "a") as log:
             current_time = str(datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
             log.writelines(current_time + ":"+ str(traceback.format_exc()))
         print('Error: ' + str(e), file=sys.stderr)

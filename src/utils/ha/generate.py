@@ -20,23 +20,57 @@
 import os
 import json
 import traceback
+import re
+import ast
 from string import Template
 
+from eos.utils.schema.conf import Conf
+from eos.utils.schema.payload import *
+from ha import const
 
-#TODO: add logic for $variable for dynamic input in args_file
 class Generator:
     def __init__(self, compiled_file, output_file, args_file):
-        if not os.path.isfile(compiled_file):
-            raise Exception("%s invalid file in genarator" %compiled_file)
+        """
+        compiled_file   : Compiled file generate by hac compiler
+        output_file     : Output file for target ha tool
+        args_file       : Provision file for dynamic input
+        """
+        if compiled_file is None:
+            raise Exception("compiled_file is missing")
         if output_file is None:
-            self._script = "/tmp/output_script.sh"
-        elif os.path.isdir(output_file):
-            self._script = output_file + "output_script.sh"
-        else:
-            self._script = output_file
+            raise Exception("output_file is missing")
+        if args_file is None:
+            raise Exception("args_file is missing")
+        self._is_file(compiled_file)
+        self._is_file(output_file)
+        self._is_file(args_file)
+        Conf.load(const.PROV_CONF_INDEX, Yaml(args_file))
+        self._script = output_file
         with open(compiled_file, "r") as f:
             self.compiled_json = json.load(f)
+            self._provision_compiled_schema(self.compiled_json)
         self._resource_set = self.compiled_json["resources"]
+
+    def _provision_compiled_schema(self, compiled_schema):
+        """
+        Scan schema and replace ${var} in compiled schema
+        to configuration provided by provision.
+        """
+        keys = re.findall(r"\${[^}]+}(?=[^]*[^]*)", str(compiled_schema))
+        args = {}
+        new_compiled_schema = str(compiled_schema)
+        for element in keys:
+            key = element.replace("${", "").replace("}", "")
+            new_compiled_schema = new_compiled_schema.replace(element,
+                    Conf.get(const.PROV_CONF_INDEX, key, element))
+        self.compiled_json = ast.literal_eval(new_compiled_schema)
+
+    def _is_file(self, filename):
+        """
+        Check if file exists
+        """
+        if not os.path.isfile(filename):
+            raise Exception("%s invalid file in genarator" %filename)
 
     def _cluster_create(self):
         pass

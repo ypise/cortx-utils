@@ -1,3 +1,5 @@
 #!/usr/bin/env python3
 
-COMPILED_SPEC = "compiled.json"
+BUILD_PATH = "/tmp"
+PROV_CONF_INDEX = "PROV_CONF_INDEX"
+HAC_LOG = "/tmp/hac.log"
