@@ -22,8 +22,7 @@ import sys
 import json
 import networkx as nx
 import matplotlib.pyplot as plt
-
-from ha import const
+from eos.utils.ha import const
 
 class Validator:
     pass

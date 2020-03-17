@@ -32,12 +32,20 @@ setup(name='eos-py-utils',
       author_email='alexander.voronov@seagate.com',
       description='Common Python utilities for EOS',
       package_dir={'eos': 'src'},
-      packages=['eos', 'eos.utils', 'eos.utils.db', 'eos.utils.security', 'eos.utils.schema'],
+      packages=['eos', 'eos.utils', 'eos.utils.db',
+                'eos.utils.security', 'eos.utils.schema',
+                'eos.utils.ha'],
       package_data={
         'eos': ['py.typed'],
+      },
+      entry_points={
+        'console_scripts': [
+            'hac = eos.utils.ha.hac:main'
+        ]
       },
       long_description=long_description,
       zip_safe=False,
       python_requires='>=3.6.8',
       install_requires=['cryptography==2.8', 'schematics==2.1.0', 'toml==0.10.0',
-                        'PyYAML==5.1.2', 'configparser==4.0.2'])
+                        'PyYAML==5.1.2', 'configparser==4.0.2', 'networkx==2.4',
+                        'matplotlib=3.1.3', 'argparse==1.4.0'])

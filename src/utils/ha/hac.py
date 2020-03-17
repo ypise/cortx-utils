@@ -46,11 +46,10 @@ $ hac --generate compiled.json --output eos_pcs.sh --target pcs
 #TODO hac –d eos_ha.spec -t pcs
 
 
-if __name__ == '__main__':
-    sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
-    from ha.compile import Compiler
-    from ha import generate
-    from ha import const
+def main():
+    from eos.utils.ha.compile import Compiler
+    from eos.utils.ha import generate
+    from eos.utils.ha import const
 
     provider = {
         "pcs": generate.PCSGenerator,
@@ -94,3 +93,6 @@ if __name__ == '__main__':
             log.writelines(current_time + ":"+ str(traceback.format_exc()))
         print('Error: ' + str(e), file=sys.stderr)
         sys.exit(1)
+
+if __name__ == '__main__':
+    sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
