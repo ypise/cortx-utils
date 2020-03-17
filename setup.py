@@ -48,4 +48,4 @@ setup(name='eos-py-utils',
       python_requires='>=3.6.8',
       install_requires=['cryptography==2.8', 'schematics==2.1.0', 'toml==0.10.0',
                         'PyYAML==5.1.2', 'configparser==4.0.2', 'networkx==2.4',
-                        'matplotlib=3.1.3', 'argparse==1.4.0'])
+                        'matplotlib==3.1.3', 'argparse==1.4.0'])
