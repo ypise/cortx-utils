@@ -26,7 +26,7 @@ from string import Template
 
 from eos.utils.schema.conf import Conf
 from eos.utils.schema.payload import *
-from ha import const
+from eos.utils.ha import const
 
 class Generator:
     def __init__(self, compiled_file, output_file, args_file):
