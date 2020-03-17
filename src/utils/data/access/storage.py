@@ -20,9 +20,10 @@
 
 from abc import ABC, abstractmethod
 from typing import Type, Union, Any
-from eos.utils.db.queries import Query, ExtQuery
-from eos.utils.db.filters import IFilter
-from eos.utils.db.base_model import BaseModel
+from eos.utils.data.access import Query
+from eos.utils.data.access import ExtQuery
+from eos.utils.data.access import IFilter
+from eos.utils.data.access import BaseModel
 
 
 class IDataBase(ABC):
@@ -32,7 +33,7 @@ class IDataBase(ABC):
     async def store(self, obj: BaseModel):
         """Store object into Storage
 
-            :param Object obj: Arbitrary CSM object for storing into DB
+            :param Object obj: Arbitrary model object for storing into DB
 
         """
         pass
@@ -79,7 +80,7 @@ class IDataBase(ABC):
     @abstractmethod
     async def update_by_id(self, obj_id: Any, to_update: dict) -> bool:
         """
-        Update csm model in db by id (primary key)
+        Update base model in db by id (primary key)
 
         :param Any obj_id: id-value of the object which should be updated (primary key value)
         :param dict to_update: dictionary with fields and values which should be updated
@@ -100,7 +101,7 @@ class IDataBase(ABC):
     @abstractmethod
     async def delete_by_id(self, obj_id: Any) -> bool:
         """
-        Delete CSM model by its id
+        Delete base model by its id
 
         :param Any obj_id: id of the object to be deleted
         :return: BaseModel if object was found by its id and None otherwise
