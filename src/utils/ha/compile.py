@@ -184,8 +184,8 @@ class Compiler:
             self._verify_ha_spec_schema(ha_spec_file)
         else:
             self.source_path = source_path
-            self.build_path = "/tmp"
-            self.compiled_file = compile_file if compile_file is not None else self.build_path + const.COMPILED_SPEC
+            self.build_path = const.BUILD_PATH
+            self.compiled_file = compile_file
             self.compiled_schema = {
                 "predecessors_edge": [],
                 "predecessors_isolate": [],

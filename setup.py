@@ -32,11 +32,12 @@ setup(name='eos-py-utils',
       author_email='alexander.voronov@seagate.com',
       description='Common Python utilities for EOS',
       package_dir={'eos': 'src'},
-      packages=['eos', 'eos.utils', 'eos.utils.db', 'eos.utils.security'],
+      packages=['eos', 'eos.utils', 'eos.utils.db', 'eos.utils.security', 'eos.utils.schema'],
       package_data={
         'eos': ['py.typed'],
       },
       long_description=long_description,
       zip_safe=False,
       python_requires='>=3.6.8',
-      install_requires=['cryptography==2.8', 'schematics==2.1.0'],)
+      install_requires=['cryptography==2.8', 'schematics==2.1.0', 'toml==0.10.0',
+                        'PyYAML==5.1.2', 'configparser==4.0.2'])
