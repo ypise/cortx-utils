@@ -1,22 +1,23 @@
 {
-    "statsd": {
-        "Statsd": {
-            "group": "common",
+    "sspl": {
+        "Sspl": {
+            "group": "management",
             "provider": {
-                "name": "systemd:statsd",
-                "service": "statsd",
+                "name": "systemd:sspl",
+                "service": "sspl",
                 "interval": "10s",
                 "timeouts": [ "10s", "10s", "10s" ]
             },
             "dependencies": {
-                "predecessors" : [],
-                "colocation" : [],
+                "predecessors" : ["Consul", "RabbitMQ"],
+                "colocation" : ["Consul"],
                 "relation" : []
             },
             "ha": {
-                "mode": "active_active",
+                "mode": "master_slave",
                 "clones" : {
-                    "active": [ 1, 2]
+                    "active": [ 1, 2 ],
+                    "master": [ 1, 1 ]
                 },
                 "location": {
                     "${ha.nodes.0}": "INFINITY",
@@ -26,3 +27,4 @@
         }
     }
 }
+
