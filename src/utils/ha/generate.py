@@ -42,7 +42,6 @@ class Generator:
         if args_file is None:
             raise Exception("args_file is missing")
         self._is_file(compiled_file)
-        self._is_file(output_file)
         self._is_file(args_file)
         Conf.load(const.PROV_CONF_INDEX, Yaml(args_file))
         self._script = output_file
@@ -120,8 +119,9 @@ class PCSGenerator(Generator):
         Contain all command to generate pcs cluster
         """
         self._resource_create = Template("pcs -f $cluster_cfg resource create $resource "+
-            "$provider $param meta failure-timeout=10s op monitor timeout=$mon_tout "+
-            "interval=$mon_in op start timeout=$sta_tout op stop timeout=$sto_tout")
+            "$provider $param --group $group meta failure-timeout=10s "+
+            "op monitor timeout=$mon_tout interval=$mon_in op start "+
+            "timeout=$sta_tout op stop timeout=$sto_tout")
         self._active_active = Template("pcs -f $cluster_cfg resource clone $resource "+
             "clone-max=$clone_max clone-node-max=$clone_node_max $param")
         self._master_slave = Template("pcs -f $cluster_cfg resource clone $resource "+
@@ -176,6 +176,7 @@ class PCSGenerator(Generator):
                     resource=res,
                     provider=self._resource_set[res]["provider"]["name"],
                     param=params,
+                    group=self._resource_set[res]["group"],
                     mon_tout=self._resource_set[res]["provider"]["timeouts"][1],
                     mon_in=self._resource_set[res]["provider"]["interval"],
                     sta_tout=self._resource_set[res]["provider"]["timeouts"][0],

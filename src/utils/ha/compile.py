@@ -92,10 +92,16 @@ class SymanticValidator(Validator):
         error_msg = ""
         resource_set = self.compiled_schema["resources"]
         for resource in resource_set.keys():
-            for predecessors_resource in resource_set[resource]["dependencies"]["predecessors"]:
-                if predecessors_resource not in resource_set.keys():
-                    error_msg = error_msg + "Invalid predecessors resource ["+predecessors_resource+"] in component [" \
-                        +resource_set[resource]["component"]+"] \n"
+            for predecessors in resource_set[resource]["dependencies"]["predecessors"]:
+                if type(predecessors) is list:
+                    for predecessor in predecessors:
+                        if predecessor not in resource_set.keys():
+                            error_msg = error_msg + "Invalid predecessors resource ["+predecessor+\
+                                    "] in component ["+resource_set[resource]["component"]+"] \n"
+                else:
+                    if predecessors not in resource_set.keys():
+                        error_msg = error_msg + "Invalid predecessors resource ["+predecessors+\
+                        "] in component ["+resource_set[resource]["component"]+"] \n"
         if error_msg != "":
             raise Exception(error_msg)
 
@@ -187,9 +193,8 @@ class Compiler:
             self.compiled_file = compile_file
             self.compiled_schema = {
                 "predecessors_edge": [],
-                "predecessors_isolate": [],
-                "colocation_isolate": [],
                 "colocation_edges": [],
+                "isolate_resources": [],
                 "resources": {}
             }
             self.file_list = []
@@ -216,25 +221,19 @@ class Compiler:
         Compile graph for predecessors, colocation, relation
         """
         resource_set = self.compiled_schema["resources"]
-        for res in resource_set.keys():
-            predecessors = resource_set[res]["dependencies"]["predecessors"]
-            colocation = resource_set[res]["dependencies"]["colocation"]
-            relation = resource_set[res]["dependencies"]["relation"]
-        predecessors_isolate = []
         predecessors_edges = []
-        colocation_isolate = []
         colocation_edges = []
+        isolate_resources = []
         for res in resource_set.keys():
             predecessors = resource_set[res]["dependencies"]["predecessors"]
-            predecessors.append(res)
-            self._update_dependencies(predecessors, predecessors_isolate, predecessors_edges)
+            self._update_dependencies(predecessors, predecessors_edges, res)
             colocations = resource_set[res]["dependencies"]["colocation"]
-            colocations.append(res)
-            self._update_dependencies(colocations, colocation_isolate, colocation_edges)
+            self._update_dependencies(colocations, colocation_edges, res)
+            relation = resource_set[res]["dependencies"]["relation"]
+            isolate_resources.extend(relation)
         self.compiled_schema["predecessors_edge"] = list(set(predecessors_edges))
         self.compiled_schema["colocation_edges"] = list(set(colocation_edges))
-        self._isolate(predecessors_isolate, predecessors_edges, "predecessors_isolate")
-        self._isolate(colocation_isolate, colocation_edges, "colocation_isolate")
+        self._isolate(isolate_resources)
 
     def draw_graph(self):
         """
@@ -292,26 +291,32 @@ class Compiler:
             self.order_graph.add_node(resource)
             self.colocation_graph.add_node(resource)
 
-    def _update_dependencies(self, dependencies, isolate, edges):
+    def _update_dependencies(self, dependencies, edges, resource):
         """
         Create edges for graph
         """
-        #dependencies.reverse()
-        if len(dependencies) <= 1:
-            isolate.append(dependencies[0])
-        else:
-            for i in range(0, len(dependencies)-1):
-                edges.append((dependencies[i], dependencies[i+1]))
+        for ele_count in range(0, len(dependencies)):
+            if type(dependencies[ele_count]) is list:
+                dependencies[ele_count].append(resource)
+                for i in range(0, len(dependencies[ele_count])-1):
+                    edges.append((dependencies[ele_count][i], dependencies[ele_count][i+1]))
+                edges.append((dependencies[ele_count][i], dependencies[ele_count][i+1]))
+            else:
+                if ele_count == len(dependencies)-1:
+                    edges.append((dependencies[ele_count], resource))
+                else:
+                    edges.append((dependencies[ele_count], dependencies[ele_count+1]))
 
-    def _isolate(self, li, edges, key):
+    def _isolate(self, isolate_resources):
         """
         Find isolated resource
         """
-        for edge in edges:
+        predecessors = self.compiled_schema["predecessors_edge"]
+        for edge in predecessors:
             for res in edge:
-                if res in li:
-                    li.remove(res)
-        self.compiled_schema[key] = li
+                if res in isolate_resources:
+                    isolate_resources.remove(res)
+        self.compiled_schema["isolate_resources"] = isolate_resources
 
     def _verify_compiled_schema(self):
         """
