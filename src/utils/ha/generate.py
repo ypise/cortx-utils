@@ -61,7 +61,7 @@ class Generator:
         for element in keys:
             key = element.replace("${", "").replace("}", "")
             new_compiled_schema = new_compiled_schema.replace(element,
-                    Conf.get(const.PROV_CONF_INDEX, key, element))
+                    str(Conf.get(const.PROV_CONF_INDEX, key, element)))
         self.compiled_json = ast.literal_eval(new_compiled_schema)
 
     def _is_file(self, filename):

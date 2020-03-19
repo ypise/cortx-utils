@@ -15,8 +15,16 @@
  ****************************************************************************
 """
 
+import os
+import sys
 from setuptools import setup
 
+SPEC_DIR = "src/utils/ha/specs/"
+_ROOT = os.path.abspath(os.path.dirname(__file__)) + "/" + SPEC_DIR
+specs = []
+for root, directories, filenames in os.walk(_ROOT):
+    for filename in filenames:
+        specs.append(SPEC_DIR + filename)
 
 with open('LICENSE', 'r') as lf:
     license = lf.read()
@@ -43,6 +51,8 @@ setup(name='eos-py-utils',
             'hac = eos.utils.ha.hac:main'
         ]
       },
+      data_files = [ ('/var/lib/eos/ha/specs', specs),
+                     ('/var/lib/eos/ha', ['src/utils/ha/args.yaml']) ],
       long_description=long_description,
       zip_safe=False,
       python_requires='>=3.6.8',
