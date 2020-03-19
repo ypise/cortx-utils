@@ -16,8 +16,8 @@
             "ha": {
                 "mode": "active_passive",
                 "location": {
-                    "${ha.nodes.0}": "INFINITY",
-                    "${ha.nodes.1}": "INFINITY"
+                    "${HA.nodes.eosnode1}": "INFINITY",
+                    "${HA.nodes.eosnode2}": "INFINITY"
                 }
             }
         },
@@ -37,8 +37,8 @@
             "ha": {
                 "mode": "active_passive",
                 "location": {
-                    "${ha.nodes.0}": "INFINITY",
-                    "${ha.nodes.1}": "INFINITY"
+                    "${HA.nodes.eosnode1}": "INFINITY",
+                    "${HA.nodes.eosnode2}": "INFINITY"
                 }
             }
         }
