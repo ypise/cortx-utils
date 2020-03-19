@@ -22,160 +22,10 @@ import sys
 import json
 import networkx as nx
 import matplotlib.pyplot as plt
+
 from eos.utils.ha import const
-
-class Validator:
-    pass
-
-class SyntaxValidator(Validator):
-    """
-    SyntaxValidator check syntax for each input file
-    """
-    @staticmethod
-    def verify_file(file_name):
-        """
-        Verify file
-        """
-        if not os.path.isfile(file_name):
-            raise Exception("%s is not a file." %file_name)
-
-    @staticmethod
-    def validate_json(input_file):
-        """
-        Remove comment from file and validate for json
-        """
-        try:
-            with open(input_file, "r") as spec_file:
-                output_file = input_file + ".parse"
-                with open(output_file, "w") as parsed_file:
-                    for a_line in spec_file.readlines():
-                        line_no_spaces = a_line.strip()
-                        if not line_no_spaces.startswith('#'):
-                            parsed_file.writelines(a_line)
-            with open(output_file, "r") as parsed_file:
-                components = json.load(parsed_file)
-            return components
-        except Exception as e:
-            raise Exception("Invalid json file %s: %s" %(input_file, e))
-
-    @staticmethod
-    def check_duplicate_resource(resource, compiled_schema):
-        """
-        Check if a resource is already defined
-        """
-        if resource in compiled_schema["resources"].keys():
-            raise Exception("Resource [%s] is already defined in the component [%s]" %(res,compiled_schema["resources"][res]["component"]))
-
-class SymanticValidator(Validator):
-    """
-    SymanticValidator validate graph and compiled schema
-    """
-    def __init__(self):
-        pass
-
-    def run(self, compiled_schema, order_graph):
-        """
-        Verify cluster for graph and schema
-        """
-        #TODO: Divide validation into single file and compiled schema
-        self.compiled_schema = compiled_schema
-        self.order_graph = order_graph
-        self._verify_cycle()
-        self._verify_resource_predecessors()
-        self._verify_resource_colocation()
-        self._verify_resource_relation()
-
-    def _verify_resource_predecessors(self):
-        """
-        Verify predecessors for resource
-        """
-        error_msg = ""
-        resource_set = self.compiled_schema["resources"]
-        for resource in resource_set.keys():
-            for predecessors in resource_set[resource]["dependencies"]["predecessors"]:
-                if type(predecessors) is list:
-                    for predecessor in predecessors:
-                        if predecessor not in resource_set.keys():
-                            error_msg = error_msg + "Invalid predecessors resource ["+predecessor+\
-                                    "] in component ["+resource_set[resource]["component"]+"] \n"
-                else:
-                    if predecessors not in resource_set.keys():
-                        error_msg = error_msg + "Invalid predecessors resource ["+predecessors+\
-                        "] in component ["+resource_set[resource]["component"]+"] \n"
-        if error_msg != "":
-            raise Exception(error_msg)
-
-    def _verify_resource_colocation(self):
-        """
-        Verify colocation for resource
-        """
-        error_msg = ""
-        resource_set = self.compiled_schema["resources"]
-        for resource in resource_set.keys():
-            for predecessors_resource in resource_set[resource]["dependencies"]["colocation"]:
-                if predecessors_resource not in resource_set.keys():
-                    error_msg = error_msg + "Invalid colocation resource ["+predecessors_resource+"] in component [" \
-                        +resource_set[resource]["component"]+"] \n"
-        if error_msg != "":
-            raise Exception(error_msg)
-
-    def _verify_resource_relation(self):
-        """
-        Verify relation for resource
-        """
-        error_msg = ""
-        resource_set = self.compiled_schema["resources"]
-        for resource in resource_set.keys():
-            for predecessors_resource in resource_set[resource]["dependencies"]["relation"]:
-                if predecessors_resource not in resource_set.keys():
-                    error_msg = error_msg + "Invalid relation resource ["+predecessors_resource+"] in component [" \
-                        +resource_set[resource]["component"]+"] \n"
-        if error_msg != "":
-            raise Exception(error_msg)
-
-    def _verify_cycle(self):
-        """
-        Verify graph to find cycle
-        """
-        cycle_list = []
-        cycle_gen = nx.simple_cycles(self.order_graph)
-        for i in cycle_gen:
-            cycle_list.append(i)
-        if len(cycle_list) != 0:
-            error_msg = ""
-            for cycle in cycle_list:
-                cycle.append(cycle[0])
-                error_msg = error_msg + "Cycle found in graph " + str(cycle) + "\n"
-            raise Exception(error_msg)
-
-    def _validate_mode(self):
-        """
-        Validate mode for HA, It should be one of active_active, active_passive, master_slave
-        Validate clone for mode of resources
-        """
-        pass
-
-    def _validate_clone(self):
-        """
-        Validate clone
-            :active passive: No clone
-            :master slave: clone and master should be defined
-            :active active: clone should be defined
-            : other value is invalid
-        """
-        pass
-
-    def _validate_component(self):
-        """
-        validate component for each resource
-        """
-        pass
-
-    def _mandetory_parameter(self):
-        """
-        Check all required parameter for schema
-        """
-        pass
+from eos.utils.ha.validation import SyntaxValidator
+from eos.utils.ha.validation import SymanticValidator
 
 class Compiler:
     def __init__(self, source_path, compile_file, ha_spec_file):
@@ -200,7 +50,6 @@ class Compiler:
             self.file_list = []
             self.colocation_graph = nx.Graph()
             self.order_graph = nx.DiGraph()
-            self._validate = SymanticValidator()
 
     def parse_files(self):
         """
@@ -266,9 +115,9 @@ class Compiler:
         """
         Verify ha spec file
         """
-        SyntaxValidator.verify_file(ha_spec_file)
-        components = SyntaxValidator.validate_json(ha_spec_file)
-        return components
+        validator = SyntaxValidator(ha_spec_file)
+        validator.execute()
+        return validator.get_schema()
 
     def _create_parse_file(self, directories, filenames):
         """
@@ -279,7 +128,9 @@ class Compiler:
                 components = self._verify_ha_spec_schema(self.source_path + filename)
                 for component in components.keys():
                     for resource in components[component].keys():
-                        SyntaxValidator.check_duplicate_resource(resource, self.compiled_schema)
+                        if resource in self.compiled_schema["resources"].keys():
+                            raise Exception("Resource [%s] is already defined in the component [%s]"\
+                                    %(res,compiled_schema["resources"][res]["component"]))
                         self.compiled_schema["resources"][resource] = components[component][resource]
                         self.compiled_schema["resources"][resource]["component"] = component
 
@@ -295,17 +146,8 @@ class Compiler:
         """
         Create edges for graph
         """
-        for ele_count in range(0, len(dependencies)):
-            if type(dependencies[ele_count]) is list:
-                dependencies[ele_count].append(resource)
-                for i in range(0, len(dependencies[ele_count])-1):
-                    edges.append((dependencies[ele_count][i], dependencies[ele_count][i+1]))
-                edges.append((dependencies[ele_count][i], dependencies[ele_count][i+1]))
-            else:
-                if ele_count == len(dependencies)-1:
-                    edges.append((dependencies[ele_count], resource))
-                else:
-                    edges.append((dependencies[ele_count], dependencies[ele_count+1]))
+        for res_name in dependencies:
+            edges.append((res_name, resource))
 
     def _isolate(self, isolate_resources):
         """
@@ -322,7 +164,8 @@ class Compiler:
         """
         Verify all compiletion rule
         """
-        self._validate.run(self.compiled_schema, self.order_graph)
+        validator = SymanticValidator(self.compiled_schema, self.order_graph)
+        validator.execute()
 
     def _add_edge(self, graph, edges):
         """

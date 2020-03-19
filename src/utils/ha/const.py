@@ -3,3 +3,5 @@
 BUILD_PATH = "/tmp"
 PROV_CONF_INDEX = "PROV_CONF_INDEX"
 HAC_LOG = "/tmp/hac.log"
+HA_MODES = ["active_passive", "active_active", "master_slave"]
+HA_GROUP = ["common", "management", "io"]
