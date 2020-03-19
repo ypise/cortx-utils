@@ -1,5 +1,7 @@
 HA:
-    nodes: ["${eosnode1_name}", "${eosnode2_name}"]
+    nodes:
+        eosnode1: ${eosnode1_name}
+        eosnode2: ${eosnode2_name}
     management:
         vip:
             ip: ${mgnt_ip}
