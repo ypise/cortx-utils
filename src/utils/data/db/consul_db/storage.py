@@ -35,7 +35,7 @@ from eos.utils.data.access import Query, SortOrder, IDataBase
 from eos.utils.data.access import ExtQuery
 from eos.utils.data.db import GenericDataBase, GenericQueryConverter
 from eos.utils.data.access import BaseModel
-from eos.utils.errors import DataAccessExternalError, DataAccessInternalError
+from eos.utils.errors import DataAccessExternalError, DataAccessInternalError, DataAccessError
 from eos.utils.data.access.filters import FilterOperationCompare
 from eos.utils.data.access.filters import ComparisonOperation, IFilter
 
@@ -244,6 +244,8 @@ class ConsulDB(GenericDataBase):
             await consul_db.create_object_root()
         except ClientConnectorError as e:
             raise DataAccessExternalError(f"{e}")
+        except Exception as e:
+            raise DataAccessError(f"Some unknown exception occurred in Consul module: {e}")
 
         return consul_db
 
