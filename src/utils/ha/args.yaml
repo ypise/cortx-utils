@@ -1,0 +1,7 @@
+HA:
+    nodes: ["${eosnode1_name}", "${eosnode2_name}"]
+    management:
+        vip:
+            ip: ${mgnt_ip}
+            nic: ${mgnt_nic}
+            netmask: ${mgnt_netmask}

@@ -127,12 +127,17 @@
 
                 # Location:
                 # Location Affinity description, which includes list of nodes
+                # Location constraint defines on which server a resource should be loaded.
+                # It can also use it to define locations where the resource may never be loaded.
                 # with priority (higher has more affinity)
                 "location": {
 
                     # It is score for node it can be any number like 1000 or INFINITY
                     # It is useful if resource want one node with high priority
                     # If both node want same priority then use INFINITY
+                    # INFINITY: service must start
+                    # -INFINITY: service must not start
+                    # Inbetween value: May or may not start
                     # Example:
                     # "node1": "5000",
                     # "node2": "100"

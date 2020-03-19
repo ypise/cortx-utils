@@ -1,0 +1,30 @@
+{
+    "vip": {
+        "CsmVip": {
+            "group": "common",
+            "parameters": {
+                "ip": "${HA.management.vip.ip}",
+                "nic": "${HA.management.vip.nic}",
+                "cidr_netmask": "${HA.management.vip.netmask}"
+            },
+            "provider": {
+                "name": "ocf:heartbeat:IPaddr2",
+                "service": "vip",
+                "interval": "10s",
+                "timeouts": [ "10s", "10s", "10s" ]
+            },
+            "dependencies": {
+                "predecessors" : ["CsmWeb"],
+                "colocation" : ["CsmWeb"],
+                "relation" : []
+            },
+            "ha": {
+                "mode": "active_passive",
+                "location": {
+                    "${ha.nodes.0}": "INFINITY",
+                    "${ha.nodes.0}": "INFINITY"
+                }
+            }
+        }
+    }
+}
