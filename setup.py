@@ -33,16 +33,17 @@ with open('README.md', 'r') as rf:
     long_description = rf.read()
 
 setup(name='eos-py-utils',
-      version='0.2',
+      version='0.3',
       url='http://gitlab.mero.colo.seagate.com/eos/py-utils',
       license='Seagate',
       author='Alexander Voronov',
       author_email='alexander.voronov@seagate.com',
       description='Common Python utilities for EOS',
       package_dir={'eos': 'src'},
-      packages=['eos', 'eos.utils', 'eos.utils.db',
-                'eos.utils.security', 'eos.utils.schema',
-                'eos.utils.ha'],
+      packages=['eos', 'eos.utils',
+                'eos.utils.data', 'eos.utils.data.access', 'eos.utils.data.db',
+                'eos.utils.data.db.consul_db', 'eos.utils.data.db.elasticsearch_db',
+                'eos.utils.security', 'eos.utils.schema', 'eos.utils.ha'],
       package_data={
         'eos': ['py.typed'],
       },

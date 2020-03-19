@@ -20,7 +20,7 @@
 
 from schematics.types import BaseType
 
-from eos.utils.db.filters import IFilter
+from eos.utils.data.access.filters import IFilter
 from enum import Enum
 
 

@@ -21,6 +21,7 @@
 from abc import ABC, abstractmethod
 from enum import Enum
 from typing import List, Any
+from eos.utils.errors import MalformedQueryError
 
 
 class IFilter(ABC):
@@ -41,7 +42,7 @@ class FilterOperationAnd(IFilter):
 
     def __init__(self, *args):
         if len(args) < 2 or not all(isinstance(x, IFilter) for x in args):
-            raise ValueError("AND operation takes >= 2 arguments of filter type")
+            raise MalformedQueryError("AND operation takes >= 2 arguments of filter type")
 
         self._operands = args
 
@@ -60,7 +61,7 @@ class FilterOperationOr(IFilter):
 
     def __init__(self, *args):
         if len(args) < 2 or not all(isinstance(x, IFilter) for x in args):
-            raise ValueError("OR operation takes >= 2 arguments of filter type")
+            raise MalformedQueryError("OR operation takes >= 2 arguments of filter type")
 
         self._operands = args
 
@@ -97,7 +98,7 @@ class ComparisonOperation(Enum):
         if op in mapping:
             return mapping[op]
         else:
-            raise ValueError("Invalid comparison operation: {}".format(op))
+            raise MalformedQueryError("Invalid comparison operation: {}".format(op))
 
 
 class FilterOperationCompare(IFilter):
@@ -151,7 +152,7 @@ def And(*args):
     :returns: a FilterOperationAnd object
     """
     if not args:
-        raise ValueError("AND operation must take at least 1 argument")
+        raise MalformedQueryError("AND operation must take at least 1 argument")
 
     if len(args) == 1:
         return args[0]
@@ -166,7 +167,7 @@ def Or(*args):
     :returns: a FilterOperationOr object
     """
     if not args:
-        raise ValueError("OR operation must take at least 1 argument")
+        raise MalformedQueryError("OR operation must take at least 1 argument")
 
     if len(args) == 1:
         return args[0]
