@@ -110,9 +110,25 @@ class PCSGenerator(Generator):
         """
         with open(self._script, "w") as script_file:
             script_file.writelines("#!/bin/bash\n\n")
+            script_file.writelines("#Assign variable\n\n")
+        self._assign_var()
+        with open(self._script, "a") as script_file:
             script_file.writelines("pcs cluster cib "+self._cluster_cfg+ "\n\n")
             script_file.writelines("# Create Resource\n")
         self._cluster_create()
+
+    def _assign_var(self):
+        """
+        Assign value to runtime variable
+        """
+        keys = list(set(re.findall(r"\${[^}]+}(?=[^]*[^]*)", str(self.compiled_json))))
+        args = {}
+        with open(self._script, "a") as script_file:
+            for element in keys:
+                if "." not in element:
+                    variable = element.replace("${", "").replace("}", "")
+                    key = variable.replace("_", ".")
+                    script_file.writelines(variable+ "="+ str(Conf.get(const.PROV_CONF_INDEX, key))+"\n")
 
     def _pcs_cmd_load(self):
         """

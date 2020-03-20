@@ -9,15 +9,15 @@
                 "timeouts": [ "10s", "10s", "10s" ]
             },
             "dependencies": {
-                "predecessors" : [ "Consul", "Kibana", "RabbitMQ" ],
-                "colocation" : [ "Consul", "Kibana", "RabbitMQ" ],
+                "predecessors" : [ "Consul1", "Kibana", "RabbitMQ" ],
+                "colocation" : [ "Consul1", "Kibana", "RabbitMQ" ],
                 "relation" : [ "Statsd" ]
             },
             "ha": {
                 "mode": "active_passive",
                 "location": {
-                    "${HA.nodes.eosnode1}": "INFINITY",
-                    "${HA.nodes.eosnode2}": "INFINITY"
+                    "${HA_nodes_eosnode1}": "INFINITY",
+                    "${HA_nodes_eosnode2}": "INFINITY"
                 }
             }
         },
@@ -37,8 +37,8 @@
             "ha": {
                 "mode": "active_passive",
                 "location": {
-                    "${HA.nodes.eosnode1}": "INFINITY",
-                    "${HA.nodes.eosnode2}": "INFINITY"
+                    "${HA_nodes_eosnode1}": "INFINITY",
+                    "${HA_nodes_eosnode2}": "INFINITY"
                 }
             }
         }
