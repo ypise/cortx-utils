@@ -9,8 +9,8 @@
                 "timeouts": [ "10s", "10s", "10s" ]
             },
             "dependencies": {
-                "predecessors" : ["Consul", "RabbitMQ"],
-                "colocation" : ["Consul"],
+                "predecessors" : ["Consul1", "RabbitMQ"],
+                "colocation" : ["Consul1"],
                 "relation" : []
             },
             "ha": {
@@ -20,8 +20,8 @@
                     "master": [ 1, 1 ]
                 },
                 "location": {
-                    "${HA.nodes.eosnode1}": "INFINITY",
-                    "${HA.nodes.eosnode2}": "INFINITY"
+                    "${HA_nodes_eosnode1}": "INFINITY",
+                    "${HA_nodes_eosnode2}": "INFINITY"
                 }
             }
         }

@@ -19,8 +19,8 @@
                     "active": [ 1, 2]
                 },
                 "location": {
-                    "${HA.nodes.eosnode1}": "INFINITY",
-                    "${HA.nodes.eosnode2}": "INFINITY"
+                    "${HA_nodes_eosnode1}": "INFINITY",
+                    "${HA_nodes_eosnode2}": "INFINITY"
                 }
             }
         }

@@ -3,9 +3,9 @@
         "CsmVip": {
             "group": "common",
             "parameters": {
-                "ip": "${HA.management.vip.ip}",
-                "nic": "${HA.management.vip.nic}",
-                "cidr_netmask": "${HA.management.vip.netmask}"
+                "ip": "${HA_management_vip_ip}",
+                "nic": "${HA_management_vip_nic}",
+                "cidr_netmask": "${HA_management_vip_netmask}"
             },
             "provider": {
                 "name": "ocf:heartbeat:IPaddr2",
@@ -21,8 +21,8 @@
             "ha": {
                 "mode": "active_passive",
                 "location": {
-                    "${HA.nodes.eosnode1}": "INFINITY",
-                    "${HA.nodes.eosnode2}": "INFINITY"
+                    "${HA_nodes_eosnode1}": "INFINITY",
+                    "${HA_nodes_eosnode2}": "INFINITY"
                 }
             }
         }

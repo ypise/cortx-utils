@@ -1,9 +1,9 @@
 HA:
     nodes:
-        eosnode1: ${eosnode1_name}
-        eosnode2: ${eosnode2_name}
+        eosnode1: $(echo $(pcs status | grep Online | awk '{print $3}'))
+        eosnode2: $(echo $(pcs status | grep Online | awk '{print $4}'))
     management:
         vip:
-            ip: ${mgnt_ip}
-            nic: ${mgnt_nic}
-            netmask: ${mgnt_netmask}
+            ip: $(salt "eosnode-1" pillar.get cluster:mgmt_vip  --output=json | grep iface | awk '{print $2}' | sed  s/\"//g | sed s/\,//g)
+            nic: $(salt "eosnode-1" pillar.get cluster:mgmt_vip  --output=json | grep ipaddr | awk '{print $2}' | sed  s/\"//g | sed s/\,//g)
+            netmask: 24

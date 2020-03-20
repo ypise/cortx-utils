@@ -1,10 +1,10 @@
 {
     "consul": {
-        "Consul": {
+        "Consul1": {
             "group": "common",
             "provider": {
-                "name": "systemd:consul",
-                "service": "consul",
+                "name": "systemd:hare-consul-agent-c1",
+                "service": "hare-consul-agent-c1",
                 "interval": "10s",
                 "timeouts": [ "10s", "10s", "10s" ]
             },
@@ -14,13 +14,31 @@
                 "relation" : []
             },
             "ha": {
-                "mode": "active_active",
-                "clones" : {
-                    "active": [ 1, 2]
-                },
+                "mode": "active_passive",
                 "location": {
-                    "${HA.nodes.eosnode1}": "INFINITY",
-                    "${HA.nodes.eosnode2}": "INFINITY"
+                    "${HA_nodes_eosnode1}": "INFINITY",
+                    "${HA_nodes_eosnode2}": "1000"
+                }
+            }
+        },
+        "Consul2": {
+            "group": "common",
+            "provider": {
+                "name": "systemd:hare-consul-agent-c2",
+                "service": "hare-consul-agent-c2",
+                "interval": "10s",
+                "timeouts": [ "10s", "10s", "10s" ]
+            },
+            "dependencies": {
+                "predecessors" : [],
+                "colocation" : [],
+                "relation" : []
+            },
+            "ha": {
+                "mode": "active_passive",
+                "location": {
+                    "${HA_nodes_eosnode1}": "1000",
+                    "${HA_nodes_eosnode2}": "INFINITY"
                 }
             }
         }
