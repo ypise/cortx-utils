@@ -9,8 +9,8 @@
                 "timeouts": [ "10s", "10s", "10s" ]
             },
             "dependencies": {
-                "predecessors" : [],
-                "colocation" : [],
+                "predecessors" : ["RominigIP1"],
+                "colocation" : ["RominigIP2"],
                 "relation" : []
             },
             "ha": {
@@ -30,8 +30,8 @@
                 "timeouts": [ "10s", "10s", "10s" ]
             },
             "dependencies": {
-                "predecessors" : [],
-                "colocation" : [],
+                "predecessors" : ["RominigIP2"],
+                "colocation" : ["RominigIP2"],
                 "relation" : []
             },
             "ha": {

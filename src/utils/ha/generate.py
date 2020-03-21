@@ -113,6 +113,7 @@ class PCSGenerator(Generator):
             script_file.writelines("#Assign variable\n\n")
         self._assign_var()
         with open(self._script, "a") as script_file:
+            script_file.writelines("\n\n# Set pcs cluster \n\n")
             script_file.writelines("pcs cluster cib "+self._cluster_cfg+ "\n\n")
             script_file.writelines("# Create Resource\n")
         self._cluster_create()

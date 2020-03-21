@@ -6,4 +6,13 @@ HA:
         vip:
             ip: $(salt "eosnode-1" pillar.get cluster:mgmt_vip  --output=json | grep iface | awk '{print $2}' | sed  s/\"//g | sed s/\,//g)
             nic: $(salt "eosnode-1" pillar.get cluster:mgmt_vip  --output=json | grep ipaddr | awk '{print $2}' | sed  s/\"//g | sed s/\,//g)
+            netmask: $(salt "eosnode-1" pillar.get cluster:mgmt_vip  --output=json | grep subnet | awk '{print $2}' | sed  s/\"//g | sed s/\,//g)
+    io:
+        vip1:
+            ip: $(salt "eosnode-1" pillar.get cluster:eosnode-1  --output=json | grep roaming_ip | awk '{print $2}' | sed  s/\"//g | sed s/\,//g)
+            nic: enp175s0f1
+            netmask: 24
+        vip2:
+            ip: $(salt "eosnode-2" pillar.get cluster:eosnode-1  --output=json | grep roaming_ip | awk '{print $2}' | sed  s/\"//g | sed s/\,//g)
+            nic: enp175s0f1
             netmask: 24
