@@ -25,6 +25,60 @@
                     "${HA_nodes_eosnode2}": "INFINITY"
                 }
             }
+        },
+        "RominigIP1": {
+            "group": "common",
+            "parameters": {
+                "ip": "${HA_io_vip1_ip}",
+                "nic": "${HA_io_vip1_nic}",
+                "cidr_netmask": "${HA_io_vip1_netmask}",
+                "iflabel": "consul1"
+            },
+            "provider": {
+                "name": "ocf:heartbeat:IPaddr2",
+                "service": "vip",
+                "interval": "10s",
+                "timeouts": [ "10s", "10s", "10s" ]
+            },
+            "dependencies": {
+                "predecessors" : [],
+                "colocation" : [],
+                "relation" : []
+            },
+            "ha": {
+                "mode": "active_passive",
+                "location": {
+                    "${HA_nodes_eosnode1}": "INFINITY",
+                    "${HA_nodes_eosnode2}": "1000"
+                }
+            }
+        },
+        "RominigIP2": {
+            "group": "common",
+            "parameters": {
+                "ip": "${HA_io_vip2_ip}",
+                "nic": "${HA_io_vip2_nic}",
+                "cidr_netmask": "${HA_io_vip2_netmask}",
+                "iflabel": "consul2"
+            },
+            "provider": {
+                "name": "ocf:heartbeat:IPaddr2",
+                "service": "vip",
+                "interval": "10s",
+                "timeouts": [ "10s", "10s", "10s" ]
+            },
+            "dependencies": {
+                "predecessors" : [],
+                "colocation" : [],
+                "relation" : []
+            },
+            "ha": {
+                "mode": "active_passive",
+                "location": {
+                    "${HA_nodes_eosnode1}": "1000",
+                    "${HA_nodes_eosnode2}": "INFINITY"
+                }
+            }
         }
     }
 }
