@@ -3,7 +3,7 @@
         "Kibana": {
             "group": "common",
             "provider": {
-                "name": "systemd:kabana",
+                "name": "systemd:kibana",
                 "service": "kibana",
                 "interval": "10s",
                 "timeouts": [ "10s", "10s", "10s" ]

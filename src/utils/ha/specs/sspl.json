@@ -3,7 +3,7 @@
         "Sspl": {
             "group": "management",
             "provider": {
-                "name": "systemd:sspl",
+                "name": "ocf:seagate:sspl",
                 "service": "sspl",
                 "interval": "10s",
                 "timeouts": [ "10s", "10s", "10s" ]

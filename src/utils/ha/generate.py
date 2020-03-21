@@ -141,9 +141,9 @@ class PCSGenerator(Generator):
             "timeout=$sta_tout op stop timeout=$sto_tout")
         self._active_active = Template("pcs -f $cluster_cfg resource clone $resource "+
             "clone-max=$clone_max clone-node-max=$clone_node_max $param")
-        self._master_slave = Template("pcs -f $cluster_cfg resource clone $resource "+
-            "clone-max=$clone_max clone-node-max=$clone_node_max master-max=$master_max "+
-            "master-node-max=$master_node_max $param")
+        self._master_slave = Template("pcs -f $cluster_cfg resource master $master "+
+            "$resource clone-max=$clone_max clone-node-max=$clone_node_max "+
+            "master-max=$master_max master-node-max=$master_node_max $param")
         self._location = Template("pcs -f $cluster_cfg constraint location $resource prefers $node=$score")
         self._order = Template("pcs -f $cluster_cfg constraint order $res1 then $res2")
         self._colocation = Template("pcs -f $cluster_cfg constraint colocation set $res1 $res2")
@@ -232,6 +232,7 @@ class PCSGenerator(Generator):
                 params = params + " "
         master = self._master_slave.substitute(
             cluster_cfg=self._cluster_cfg,
+            master=res+"_Master",
             resource=res,
             clone_max=self._resource_set[res]["ha"]["clones"]["active"][1],
             clone_node_max=self._resource_set[res]["ha"]["clones"]["active"][0],
@@ -242,11 +243,23 @@ class PCSGenerator(Generator):
         with open(self._script, "a") as f:
             f.writelines(master+ "\n")
 
+    def _get_clone_name(self, resource):
+        """
+        Parse and return clone name
+        """
+        res_name = ""
+        mode = self._resource_set[resource]["ha"]["mode"]
+        if mode != "active_passive":
+            res_name = resource + ("-clone" if mode == "active_active" else "_Master")
+        else:
+            res_name = resource
+        return res_name
+
     def _create_order(self):
         with open(self._script, "a") as f:
             for edge in self.compiled_json["predecessors_edge"]:
-                r0 = edge[0] + "-clone" if self._resource_set[edge[0]]["ha"]["mode"] != "active_passive" else edge[0]
-                r1 = edge[1] + "-clone" if self._resource_set[edge[1]]["ha"]["mode"] != "active_passive" else edge[1]
+                r0 = self._get_clone_name(edge[0])
+                r1 = self._get_clone_name(edge[1])
                 res_order = self._order.substitute(
                     cluster_cfg=self._cluster_cfg,
                     res1=r0,
@@ -257,8 +270,8 @@ class PCSGenerator(Generator):
     def _create_colocation(self):
         with open(self._script, "a") as f:
             for edge in self.compiled_json["colocation_edges"]:
-                r0 = edge[0] + "-clone" if self._resource_set[edge[0]]["ha"]["mode"] != "active_passive" else edge[0]
-                r1 = edge[1] + "-clone" if self._resource_set[edge[1]]["ha"]["mode"] != "active_passive" else edge[1]
+                r0 = self._get_clone_name(edge[0])
+                r1 = self._get_clone_name(edge[1])
                 colocation_cmd = self._colocation.substitute(
                     cluster_cfg=self._cluster_cfg,
                     res1=r0,
@@ -268,7 +281,7 @@ class PCSGenerator(Generator):
 
     def _create_location(self, res, res_mode):
         with open(self._script, "a") as f:
-            res_clone = res + "-clone" if res_mode != "active_passive" else res
+            res_clone = self._get_clone_name(res)
             for node in self._resource_set[res]["ha"]["location"].keys():
                 colocation_cmd = self._location.substitute(
                     cluster_cfg=self._cluster_cfg,
