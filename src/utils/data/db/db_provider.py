@@ -94,7 +94,7 @@ class GeneralConfig(Model):
 class ProxyStorageCallDecorator:
     """Class to decorate proxy call"""
 
-    def __init__(self, async_storage, model: Type[CsmModel], attr_name: str, event: ThreadSafeEvent):
+    def __init__(self, async_storage, model: Type[BaseModel], attr_name: str, event: ThreadSafeEvent):
         self._async_storage = async_storage
         self._model = model
         self._attr_name = attr_name
