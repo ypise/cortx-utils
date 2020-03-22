@@ -114,7 +114,8 @@ class PCSGenerator(Generator):
         self._assign_var()
         with open(self._script, "a") as script_file:
             script_file.writelines("\n\n# Set pcs cluster \n\n")
-            script_file.writelines("pcs cluster cib "+self._cluster_cfg+ "\n\n")
+            script_file.writelines("pcs cluster cib "+self._cluster_cfg+ "\n")
+            script_file.writelines("pcs -f "+self._cluster_cfg+" cluster stop --all\n\n")
             script_file.writelines("# Create Resource\n")
         self._cluster_create()
 
@@ -136,7 +137,7 @@ class PCSGenerator(Generator):
         Contain all command to generate pcs cluster
         """
         self._resource_create = Template("pcs -f $cluster_cfg resource create $resource "+
-            "$provider $param --group $group meta failure-timeout=10s "+
+            "$provider $param meta failure-timeout=10s "+
             "op monitor timeout=$mon_tout interval=$mon_in op start "+
             "timeout=$sta_tout op stop timeout=$sto_tout")
         self._active_active = Template("pcs -f $cluster_cfg resource clone $resource "+
@@ -169,8 +170,9 @@ class PCSGenerator(Generator):
                 f.writelines("\n\n#Colocation\n")
             self._create_colocation()
             with open(self._script, "a") as f:
-                f.writelines("\npcs cluster verify -V " +self._cluster_cfg+ "\n")
-                f.writelines("\npcs cluster cib-push " +self._cluster_cfg+ "\n")
+                f.writelines("\npcs -f " +self._cluster_cfg+ " cluster start --all\n")
+                f.writelines("pcs cluster verify -V " +self._cluster_cfg+ "\n")
+                f.writelines("pcs cluster cib-push " +self._cluster_cfg+ "\n")
         except Exception as e:
             raise Exception(str(traceback.format_exc()))
 
@@ -193,7 +195,6 @@ class PCSGenerator(Generator):
                     resource=res,
                     provider=self._resource_set[res]["provider"]["name"],
                     param=params,
-                    group=self._resource_set[res]["group"],
                     mon_tout=self._resource_set[res]["provider"]["timeouts"][1],
                     mon_in=self._resource_set[res]["provider"]["interval"],
                     sta_tout=self._resource_set[res]["provider"]["timeouts"][0],
