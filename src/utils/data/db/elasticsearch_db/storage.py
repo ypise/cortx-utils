@@ -325,7 +325,7 @@ class ElasticSearchDB(GenericDataBase):
         # We are associating index name in ElasticSearch with given collection
         self._index = self._collection
 
-        if not isinstance(model, type) or BaseModel not in model.__bases__:
+        if not isinstance(model, type) or not issubclass(model, BaseModel):
             raise DataAccessInternalError("Model parameter is not a Class object or not inherited "
                                           "from eos.utils.data.access.BaseModel")
         self._model = model  # Needed to build returning objects
