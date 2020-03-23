@@ -4,8 +4,8 @@ HA:
         eosnode2: $(echo $(pcs status | grep Online | awk '{print $4}'))
     management:
         vip:
-            ip: $(salt "eosnode-1" pillar.get cluster:mgmt_vip  --output=json | grep iface | awk '{print $2}' | sed  s/\"//g | sed s/\,//g)
-            nic: $(salt "eosnode-1" pillar.get cluster:mgmt_vip  --output=json | grep ipaddr | awk '{print $2}' | sed  s/\"//g | sed s/\,//g)
+            ip: $(salt "eosnode-1" pillar.get cluster:mgmt_vip  --output=json | grep ipaddr | awk '{print $2}' | sed  s/\"//g | sed s/\,//g)
+            nic: $(salt "eosnode-1" pillar.get cluster:mgmt_vip  --output=json | grep iface | awk '{print $2}' | sed  s/\"//g | sed s/\,//g)
             netmask: $(salt "eosnode-1" pillar.get cluster:mgmt_vip  --output=json | grep subnet | awk '{print $2}' | sed  s/\"//g | sed s/\,//g)
     io:
         vip1:
