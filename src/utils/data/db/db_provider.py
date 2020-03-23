@@ -164,7 +164,6 @@ class AsyncDataBase:
                                                                          self._model_settings.collection,
                                                                          self._model)
         except DataAccessError:
-            Log.error("Can't create storage instance. See logs for more information")
             raise
         except Exception as e:
             raise DataAccessError(f"Unexpected message happened: {e}")
