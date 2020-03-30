@@ -53,7 +53,7 @@ setup(name='eos-py-utils',
         ]
       },
       data_files = [ ('/var/lib/eos/ha/specs', specs),
-                     ('/var/lib/eos/ha', ['src/utils/ha/args.yaml']) ],
+                     ('/var/lib/eos/ha', ['src/utils/ha/args.yaml', 'src/utils/ha/re_build.sh'])],
       long_description=long_description,
       zip_safe=False,
       python_requires='>=3.6.8',
