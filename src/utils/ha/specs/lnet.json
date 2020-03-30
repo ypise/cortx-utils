@@ -1,0 +1,78 @@
+{
+    "lnet": {
+        "Lnet": {
+            "group": "io",
+            "provider": {
+                "name": "systemd:lnet",
+                "service": "lnet",
+                "interval": "10s",
+                "timeouts": [ "10s", "10s", "10s" ]
+            },
+            "dependencies": {
+                "predecessors" : [],
+                "colocation" : [],
+                "relation" : []
+            },
+            "ha": {
+                "mode": "active_active",
+                "clones" : {
+                    "active": [ 1, 2]
+                },
+                "location": {
+                    "${HA_nodes_eosnode1}": "INFINITY",
+                    "${HA_nodes_eosnode2}": "INFINITY"
+                }
+            }
+        },
+        "LnetC1": {
+            "group": "io",
+            "parameters": {
+                "iface": "${HA_io_lnet1_iface}",
+                "nettype": "${HA_io_lnet1_nettype}"
+            },
+            "provider": {
+                "name": "ocf:seagate:lnet",
+                "service": "lnet",
+                "interval": "30s",
+                "timeouts": [ "30s", "30s", "30s" ]
+            },
+            "dependencies": {
+                "predecessors" : ["RominigIP1"],
+                "colocation" : [],
+                "relation" : []
+            },
+            "ha": {
+                "mode": "active_passive",
+                "location": {
+                    "${HA_nodes_eosnode1}": "INFINITY",
+                    "${HA_nodes_eosnode2}": "1000"
+                }
+            }
+        },
+        "LnetC2": {
+            "group": "io",
+            "parameters": {
+                "iface": "${HA_io_lnet1_iface}",
+                "nettype": "${HA_io_lnet1_nettype}"
+            },
+            "provider": {
+                "name": "ocf:seagate:lnet",
+                "service": "lnet",
+                "interval": "30s",
+                "timeouts": [ "30s", "30s", "30s" ]
+            },
+            "dependencies": {
+                "predecessors" : ["RominigIP2"],
+                "colocation" : [],
+                "relation" : []
+            },
+            "ha": {
+                "mode": "active_passive",
+                "location": {
+                    "${HA_nodes_eosnode1}": "1000",
+                    "${HA_nodes_eosnode2}": "INFINITY"
+                }
+            }
+        }
+    }
+}
