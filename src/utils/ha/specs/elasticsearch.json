@@ -1,6 +1,6 @@
 {
     "elasticsearch": {
-        "Elasticsearch": {
+        "els-search": {
             "group": "common",
             "provider": {
                 "name": "systemd:elasticsearch",

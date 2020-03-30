@@ -1,6 +1,6 @@
 {
     "rabbitmq": {
-        "RabbitMQ": {
+        "rabbitmq": {
             "group": "common",
             "provider": {
                 "name": "systemd:rabbitmq-server",

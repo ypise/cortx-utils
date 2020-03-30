@@ -1,6 +1,6 @@
 {
     "ldap": {
-        "Ldap": {
+        "ldap": {
             "group": "common",
             "provider": {
                 "name": "systemd:slapd",

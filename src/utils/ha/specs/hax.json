@@ -1,6 +1,6 @@
 {
     "hare": {
-        "HaxC1": {
+        "hax-c1": {
             "group": "io",
             "provider": {
                 "name": "systemd:hare-hax-c1",
@@ -9,7 +9,7 @@
                 "timeouts": [ "10s", "10s", "10s" ]
             },
             "dependencies": {
-                "predecessors" : ["MeroKernel", "Consul1"],
+                "predecessors" : ["mero-kernel", "consul-c1"],
                 "colocation" : [],
                 "relation" : []
             },
@@ -21,7 +21,7 @@
                 }
             }
         },
-        "HaxC2": {
+        "hax-c2": {
             "group": "io",
             "provider": {
                 "name": "systemd:hare-hax-c2",
@@ -30,7 +30,7 @@
                 "timeouts": [ "10s", "10s", "10s" ]
             },
             "dependencies": {
-                "predecessors" : ["MeroKernel", "Consul2"],
+                "predecessors" : ["mero-kernel", "consul-c2"],
                 "colocation" : [],
                 "relation" : []
             },

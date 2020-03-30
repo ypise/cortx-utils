@@ -10,12 +10,12 @@ HA:
     io:
         vip1:
             ip: $(salt "eosnode-1" pillar.get cluster:eosnode-1  --output=json | grep roaming_ip | awk '{print $2}' | sed  s/\"//g | sed s/\,//g)
-            nic: enp175s0f1
+            nic: $(salt "eosnode-1" pillar.get cluster:eosnode-1 --output=json | jq '.["eosnode-1"].network["data_nw"].iface[0]')
             netmask: 24
             iflabel: "c1"
         vip2:
-            ip: $(salt "eosnode-2" pillar.get cluster:eosnode-1  --output=json | grep roaming_ip | awk '{print $2}' | sed  s/\"//g | sed s/\,//g)
-            nic: enp175s0f1
+            ip: $(salt "eosnode-1" pillar.get cluster:eosnode-2  --output=json | grep roaming_ip | awk '{print $2}' | sed  s/\"//g | sed s/\,//g)
+            nic: $(salt "eosnode-1" pillar.get cluster:eosnode-1 --output=json | jq '.["eosnode-1"].network["data_nw"].iface[1]')
             netmask: 24
             iflabel: "c2"
         lnet1:
@@ -25,30 +25,30 @@ HA:
             iface: "$3"
             nettype: "$4"
         mero:
-            meroconfc1: $(python3 -c "import json; print([v['checks'][0]['args'][2] for v in json.load(open('/var/lib/hare/consul-server-conf1.json', 'r'))['services'] if v['name'] == 'confd'][0])")
-            meroconfc2: $(python3 -c "import json; print([v['checks'][0]['args'][2] for v in json.load(open('/var/lib/hare/consul-server-conf2.json', 'r'))['services'] if v['name'] == 'confd'][0])")
-            meroiosc1: $(python3 -c "import json; print([v['checks'][0]['args'][2] for v in json.load(open('/var/lib/hare/consul-server-conf1.json', 'r'))['services'] if v['name'] == 'ios'][0])")
-            meroiosc2: $(python3 -c "import json; print([v['checks'][0]['args'][2] for v in json.load(open('/var/lib/hare/consul-server-conf2.json', 'r'))['services'] if v['name'] == 'ios'][0])")
+            meroconfc1: $(python3 -c "import json; print([v['checks'][0]['args'][2] for v in json.load(open('/var/lib/hare/consul-server-c1-conf.json', 'r'))['services'] if v['name'] == 'confd'][0])")
+            meroconfc2: $(python3 -c "import json; print([v['checks'][0]['args'][2] for v in json.load(open('/var/lib/hare/consul-server-c1-conf.json', 'r'))['services'] if v['name'] == 'confd'][0])")
+            meroiosc1: $(python3 -c "import json; print([v['checks'][0]['args'][2] for v in json.load(open('/var/lib/hare/consul-server-c1-conf.json', 'r'))['services'] if v['name'] == 'ios'][0])")
+            meroiosc2: $(python3 -c "import json; print([v['checks'][0]['args'][2] for v in json.load(open('/var/lib/hare/consul-server-c1-conf.json', 'r'))['services'] if v['name'] == 'ios'][0])")
         s3:
-            s3server1c1: $(python3 -c "import json; print([v['checks'][0]['args'][2] for v in json.load(open('/var/lib/hare/consul-server-conf1.json', 'r'))['services'] if v['name'] == 's3service'][0])")
-            s3server1c2: $(python3 -c "import json; print([v['checks'][0]['args'][2] for v in json.load(open('/var/lib/hare/consul-server-conf1.json', 'r'))['services'] if v['name'] == 's3service'][1])")
-            s3server1c3: $(python3 -c "import json; print([v['checks'][0]['args'][2] for v in json.load(open('/var/lib/hare/consul-server-conf1.json', 'r'))['services'] if v['name'] == 's3service'][2])")
-            s3server1c4: $(python3 -c "import json; print([v['checks'][0]['args'][2] for v in json.load(open('/var/lib/hare/consul-server-conf1.json', 'r'))['services'] if v['name'] == 's3service'][3])")
-            s3server1c5: $(python3 -c "import json; print([v['checks'][0]['args'][2] for v in json.load(open('/var/lib/hare/consul-server-conf1.json', 'r'))['services'] if v['name'] == 's3service'][4])")
-            s3server1c6: $(python3 -c "import json; print([v['checks'][0]['args'][2] for v in json.load(open('/var/lib/hare/consul-server-conf1.json', 'r'))['services'] if v['name'] == 's3service'][5])")
-            s3server1c7: $(python3 -c "import json; print([v['checks'][0]['args'][2] for v in json.load(open('/var/lib/hare/consul-server-conf1.json', 'r'))['services'] if v['name'] == 's3service'][6])")
-            s3server1c8: $(python3 -c "import json; print([v['checks'][0]['args'][2] for v in json.load(open('/var/lib/hare/consul-server-conf1.json', 'r'))['services'] if v['name'] == 's3service'][7])")
-            s3server1c9: $(python3 -c "import json; print([v['checks'][0]['args'][2] for v in json.load(open('/var/lib/hare/consul-server-conf1.json', 'r'))['services'] if v['name'] == 's3service'][8])")
-            s3server1c10: $(python3 -c "import json; print([v['checks'][0]['args'][2] for v in json.load(open('/var/lib/hare/consul-server-conf1.json', 'r'))['services'] if v['name'] == 's3service'][9])")
-            s3server1c11: $(python3 -c "import json; print([v['checks'][0]['args'][2] for v in json.load(open('/var/lib/hare/consul-server-conf1.json', 'r'))['services'] if v['name'] == 's3service'][10])")
-            s3server2c1: $(python3 -c "import json; print([v['checks'][0]['args'][2] for v in json.load(open('/var/lib/hare/consul-server-conf2.json', 'r'))['services'] if v['name'] == 's3service'][0])")
-            s3server2c2: $(python3 -c "import json; print([v['checks'][0]['args'][2] for v in json.load(open('/var/lib/hare/consul-server-conf2.json', 'r'))['services'] if v['name'] == 's3service'][1])")
-            s3server2c3: $(python3 -c "import json; print([v['checks'][0]['args'][2] for v in json.load(open('/var/lib/hare/consul-server-conf2.json', 'r'))['services'] if v['name'] == 's3service'][2])")
-            s3server2c4: $(python3 -c "import json; print([v['checks'][0]['args'][2] for v in json.load(open('/var/lib/hare/consul-server-conf2.json', 'r'))['services'] if v['name'] == 's3service'][3])")
-            s3server2c5: $(python3 -c "import json; print([v['checks'][0]['args'][2] for v in json.load(open('/var/lib/hare/consul-server-conf2.json', 'r'))['services'] if v['name'] == 's3service'][4])")
-            s3server2c6: $(python3 -c "import json; print([v['checks'][0]['args'][2] for v in json.load(open('/var/lib/hare/consul-server-conf2.json', 'r'))['services'] if v['name'] == 's3service'][5])")
-            s3server2c7: $(python3 -c "import json; print([v['checks'][0]['args'][2] for v in json.load(open('/var/lib/hare/consul-server-conf2.json', 'r'))['services'] if v['name'] == 's3service'][6])")
-            s3server2c8: $(python3 -c "import json; print([v['checks'][0]['args'][2] for v in json.load(open('/var/lib/hare/consul-server-conf2.json', 'r'))['services'] if v['name'] == 's3service'][7])")
-            s3server2c9: $(python3 -c "import json; print([v['checks'][0]['args'][2] for v in json.load(open('/var/lib/hare/consul-server-conf2.json', 'r'))['services'] if v['name'] == 's3service'][8])")
-            s3server2c10: $(python3 -c "import json; print([v['checks'][0]['args'][2] for v in json.load(open('/var/lib/hare/consul-server-conf2.json', 'r'))['services'] if v['name'] == 's3service'][9])")
-            s3server2c11: $(python3 -c "import json; print([v['checks'][0]['args'][2] for v in json.load(open('/var/lib/hare/consul-server-conf2.json', 'r'))['services'] if v['name'] == 's3service'][10])")
+            s3server1c1: $(python3 -c "import json; print([v['checks'][0]['args'][2] for v in json.load(open('/var/lib/hare/consul-server-c1-conf.json', 'r'))['services'] if v['name'] == 's3service'][0])")
+            s3server1c2: $(python3 -c "import json; print([v['checks'][0]['args'][2] for v in json.load(open('/var/lib/hare/consul-server-c1-conf.json', 'r'))['services'] if v['name'] == 's3service'][1])")
+            s3server1c3: $(python3 -c "import json; print([v['checks'][0]['args'][2] for v in json.load(open('/var/lib/hare/consul-server-c1-conf.json', 'r'))['services'] if v['name'] == 's3service'][2])")
+            s3server1c4: $(python3 -c "import json; print([v['checks'][0]['args'][2] for v in json.load(open('/var/lib/hare/consul-server-c1-conf.json', 'r'))['services'] if v['name'] == 's3service'][3])")
+            s3server1c5: $(python3 -c "import json; print([v['checks'][0]['args'][2] for v in json.load(open('/var/lib/hare/consul-server-c1-conf.json', 'r'))['services'] if v['name'] == 's3service'][4])")
+            s3server1c6: $(python3 -c "import json; print([v['checks'][0]['args'][2] for v in json.load(open('/var/lib/hare/consul-server-c1-conf.json', 'r'))['services'] if v['name'] == 's3service'][5])")
+            s3server1c7: $(python3 -c "import json; print([v['checks'][0]['args'][2] for v in json.load(open('/var/lib/hare/consul-server-c1-conf.json', 'r'))['services'] if v['name'] == 's3service'][6])")
+            s3server1c8: $(python3 -c "import json; print([v['checks'][0]['args'][2] for v in json.load(open('/var/lib/hare/consul-server-c1-conf.json', 'r'))['services'] if v['name'] == 's3service'][7])")
+            s3server1c9: $(python3 -c "import json; print([v['checks'][0]['args'][2] for v in json.load(open('/var/lib/hare/consul-server-c1-conf.json', 'r'))['services'] if v['name'] == 's3service'][8])")
+            s3server1c10: $(python3 -c "import json; print([v['checks'][0]['args'][2] for v in json.load(open('/var/lib/hare/consul-server-c1-conf.json', 'r'))['services'] if v['name'] == 's3service'][9])")
+            s3server1c11: $(python3 -c "import json; print([v['checks'][0]['args'][2] for v in json.load(open('/var/lib/hare/consul-server-c1-conf.json', 'r'))['services'] if v['name'] == 's3service'][10])")
+            s3server2c1: $(python3 -c "import json; print([v['checks'][0]['args'][2] for v in json.load(open('/var/lib/hare/consul-server-c2-conf.json', 'r'))['services'] if v['name'] == 's3service'][0])")
+            s3server2c2: $(python3 -c "import json; print([v['checks'][0]['args'][2] for v in json.load(open('/var/lib/hare/consul-server-c2-conf.json', 'r'))['services'] if v['name'] == 's3service'][1])")
+            s3server2c3: $(python3 -c "import json; print([v['checks'][0]['args'][2] for v in json.load(open('/var/lib/hare/consul-server-c2-conf.json', 'r'))['services'] if v['name'] == 's3service'][2])")
+            s3server2c4: $(python3 -c "import json; print([v['checks'][0]['args'][2] for v in json.load(open('/var/lib/hare/consul-server-c2-conf.json', 'r'))['services'] if v['name'] == 's3service'][3])")
+            s3server2c5: $(python3 -c "import json; print([v['checks'][0]['args'][2] for v in json.load(open('/var/lib/hare/consul-server-c2-conf.json', 'r'))['services'] if v['name'] == 's3service'][4])")
+            s3server2c6: $(python3 -c "import json; print([v['checks'][0]['args'][2] for v in json.load(open('/var/lib/hare/consul-server-c2-conf.json', 'r'))['services'] if v['name'] == 's3service'][5])")
+            s3server2c7: $(python3 -c "import json; print([v['checks'][0]['args'][2] for v in json.load(open('/var/lib/hare/consul-server-c2-conf.json', 'r'))['services'] if v['name'] == 's3service'][6])")
+            s3server2c8: $(python3 -c "import json; print([v['checks'][0]['args'][2] for v in json.load(open('/var/lib/hare/consul-server-c2-conf.json', 'r'))['services'] if v['name'] == 's3service'][7])")
+            s3server2c9: $(python3 -c "import json; print([v['checks'][0]['args'][2] for v in json.load(open('/var/lib/hare/consul-server-c2-conf.json', 'r'))['services'] if v['name'] == 's3service'][8])")
+            s3server2c10: $(python3 -c "import json; print([v['checks'][0]['args'][2] for v in json.load(open('/var/lib/hare/consul-server-c2-conf.json', 'r'))['services'] if v['name'] == 's3service'][9])")
+            s3server2c11: $(python3 -c "import json; print([v['checks'][0]['args'][2] for v in json.load(open('/var/lib/hare/consul-server-c2-conf.json', 'r'))['services'] if v['name'] == 's3service'][10])")

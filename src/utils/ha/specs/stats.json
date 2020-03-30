@@ -1,6 +1,6 @@
 {
     "statsd": {
-        "Statsd": {
+        "statsd": {
             "group": "common",
             "provider": {
                 "name": "systemd:statsd",

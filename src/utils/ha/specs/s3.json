@@ -1,6 +1,6 @@
 {
     "s3": {
-        "S3Auth": {
+        "s3auth": {
             "group": "io",
             "provider": {
                 "name": "systemd:s3authserver",
@@ -9,7 +9,7 @@
                 "timeouts": [ "30s", "30s", "30s" ]
             },
             "dependencies": {
-                "predecessors" : ["Ldap"],
+                "predecessors" : ["ldap"],
                 "colocation" : [],
                 "relation" : []
             },
@@ -24,7 +24,7 @@
                 }
             }
         },
-        "S3BackgroundConsumer": {
+        "s3backcons": {
             "group": "io",
             "provider": {
                 "name": "systemd:s3backgroundconsumer",
@@ -33,7 +33,7 @@
                 "timeouts": [ "30s", "30s", "30s" ]
             },
             "dependencies": {
-                "predecessors" : ["RabbitMQ"],
+                "predecessors" : ["rabbitmq"],
                 "colocation" : [],
                 "relation" : []
             },
@@ -48,7 +48,7 @@
                 }
             }
         },
-        "S3BackgroundProducer": {
+        "s3backprod": {
             "group": "io",
             "provider": {
                 "name": "systemd:s3backgroundproducer",
@@ -57,7 +57,7 @@
                 "timeouts": [ "30s", "30s", "30s" ]
             },
             "dependencies": {
-                "predecessors" : ["RabbitMQ"],
+                "predecessors" : ["rabbitmq"],
                 "colocation" : [],
                 "relation" : []
             },

@@ -1,6 +1,6 @@
 {
     "haproxy": {
-        "Haproxy": {
+        "haproxy": {
             "group": "common",
             "provider": {
                 "name": "systemd:haproxy",

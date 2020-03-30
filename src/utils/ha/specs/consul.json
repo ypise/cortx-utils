@@ -1,6 +1,6 @@
 {
     "consul": {
-        "Consul1": {
+        "consul-c1": {
             "group": "common",
             "provider": {
                 "name": "systemd:hare-consul-agent-c1",
@@ -9,7 +9,7 @@
                 "timeouts": [ "10s", "10s", "10s" ]
             },
             "dependencies": {
-                "predecessors" : ["RominigIP1"],
+                "predecessors" : ["ip-c1"],
                 "colocation" : [],
                 "relation" : []
             },
@@ -21,7 +21,7 @@
                 }
             }
         },
-        "Consul2": {
+        "consul-c2": {
             "group": "common",
             "provider": {
                 "name": "systemd:hare-consul-agent-c2",
@@ -30,7 +30,7 @@
                 "timeouts": [ "10s", "10s", "10s" ]
             },
             "dependencies": {
-                "predecessors" : ["RominigIP2"],
+                "predecessors" : ["ip-c2"],
                 "colocation" : [],
                 "relation" : []
             },
