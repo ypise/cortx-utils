@@ -1,0 +1,112 @@
+{
+    "mero": {
+        "MeroKernel": {
+            "group": "io",
+            "provider": {
+                "name": "systemd:mero-kernel",
+                "service": "mero-kernel",
+                "interval": "10s",
+                "timeouts": [ "10s", "10s", "10s" ]
+            },
+            "dependencies": {
+                "predecessors" : ["LnetC1", "LnetC2"],
+                "colocation" : [],
+                "relation" : []
+            },
+            "ha": {
+                "mode": "active_active",
+                "clones" : {
+                    "active": [ 1, 2]
+                },
+                "location": {
+                    "${HA_nodes_eosnode1}": "INFINITY",
+                    "${HA_nodes_eosnode2}": "INFINITY"
+                }
+            }
+        },
+        "MeroConfigC1": {
+            "group": "io",
+            "provider": {
+                "name": "systemd:m0d@${HA_io_mero_meroconfc1}",
+                "service": "m0d@${HA_io_mero_meroconfc1}",
+                "interval": "30s",
+                "timeouts": [ "600s", "600s", "600s" ]
+            },
+            "dependencies": {
+                "predecessors" : ["LnetC1"],
+                "colocation" : ["LnetC1"],
+                "relation" : []
+            },
+            "ha": {
+                "mode": "active_passive",
+                "location": {
+                    "${HA_nodes_eosnode1}": "INFINITY",
+                    "${HA_nodes_eosnode2}": "1000"
+                }
+            }
+        },
+        "MeroConfigC2": {
+            "group": "io",
+            "provider": {
+                "name": "systemd:m0d@${HA_io_mero_meroconfc2}",
+                "service": "m0d",
+                "interval": "30s",
+                "timeouts": [ "600s", "600s", "600s" ]
+            },
+            "dependencies": {
+                "predecessors" : ["LnetC2"],
+                "colocation" : ["LnetC2"],
+                "relation" : []
+            },
+            "ha": {
+                "mode": "active_passive",
+                "location": {
+                    "${HA_nodes_eosnode1}": "1000",
+                    "${HA_nodes_eosnode2}": "INFINITY"
+                }
+            }
+        },
+        "MeroIosC1": {
+            "group": "io",
+            "provider": {
+                "name": "systemd:m0d@${HA_io_mero_meroiosc1}",
+                "service": "mero_ios_c1",
+                "interval": "600s",
+                "timeouts": [ "600s", "600s", "600s" ]
+            },
+            "dependencies": {
+                "predecessors" : ["MeroConfigC2"],
+                "colocation" : ["MeroConfigC1"],
+                "relation" : []
+            },
+            "ha": {
+                "mode": "active_passive",
+                "location": {
+                    "${HA_nodes_eosnode1}": "INFINITY",
+                    "${HA_nodes_eosnode2}": "1000"
+                }
+            }
+        },
+        "MeroIosC2": {
+            "group": "io",
+            "provider": {
+                "name": "systemd:m0d@${HA_io_mero_meroiosc2}",
+                "service": "mero_ios_c2",
+                "interval": "600s",
+                "timeouts": [ "600s", "600s", "600s" ]
+            },
+            "dependencies": {
+                "predecessors" : ["MeroConfigC1"],
+                "colocation" : ["MeroConfigC2"],
+                "relation" : []
+            },
+            "ha": {
+                "mode": "active_passive",
+                "location": {
+                    "${HA_nodes_eosnode1}": "1000",
+                    "${HA_nodes_eosnode2}": "INFINITY"
+                }
+            }
+        }
+    }
+}

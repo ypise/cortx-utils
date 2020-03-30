@@ -32,7 +32,7 @@ class Validator:
     def execute(self):
         """
         Execute all function from _syntax_validations
-        to validate schama
+        to validate schema
         """
         method_list = [validate_funtion for validate_funtion in dir(self)
                         if callable(getattr(self, validate_funtion)) and
@@ -80,7 +80,7 @@ class SyntaxValidator(Validator):
             with open(output_file, "r") as parsed_file:
                 return json.load(parsed_file)
         except Exception as e:
-            raise Exception("Invalid json file %s: %s" %(input_file, e))
+            raise Exception("Invalid json file %s: %s" %(self._schema_file, e))
 
     def _validate_mode(self):
         """

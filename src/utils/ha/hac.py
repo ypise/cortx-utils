@@ -52,7 +52,7 @@ def main():
     from eos.utils.ha import const
 
     provider = {
-        "pcs": generate.PCSGenerator,
+        "pcs": generate.PCSGeneratorResource,
         "k8s": generate.KubernetesGenerator
     }
 
@@ -73,6 +73,8 @@ def main():
                 help="Ganerate script/rule for targeted HA tool. Eg: pcs")
         argParser.add_argument("-a", "--args_file",
                 help="Args file for generator for dynamic input values")
+        argParser.add_argument("-r", "--resources",
+                help="Enter resorce list")
         args = argParser.parse_args()
 
         if args.generate is None:
@@ -84,11 +86,14 @@ def main():
                 c.create_schema()
                 c.draw_graph()
         else:
-            com = provider[args.target](args.generate, args.output, args.args_file)
+            com = provider[args.target](args.generate,
+                                        args.output,
+                                        args.args_file,
+                                        args.resources)
             com.create_script()
     except Exception as e:
         #TODO: print traceback error properly
-        with open(const.HAC_LOG, "a") as log:
+        with open(const.HAC_LOG, "w") as log:
             current_time = str(datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
             log.writelines(current_time + ":"+ str(traceback.format_exc()))
         print('Error: ' + str(e), file=sys.stderr)

@@ -1,15 +1,15 @@
 {
-    "consul": {
-        "Consul1": {
-            "group": "common",
+    "hare": {
+        "HaxC1": {
+            "group": "io",
             "provider": {
-                "name": "systemd:hare-consul-agent-c1",
-                "service": "hare-consul-agent-c1",
+                "name": "systemd:hare-hax-c1",
+                "service": "hare-hax-c1",
                 "interval": "10s",
                 "timeouts": [ "10s", "10s", "10s" ]
             },
             "dependencies": {
-                "predecessors" : ["RominigIP1"],
+                "predecessors" : ["MeroKernel", "Consul1"],
                 "colocation" : [],
                 "relation" : []
             },
@@ -21,16 +21,16 @@
                 }
             }
         },
-        "Consul2": {
-            "group": "common",
+        "HaxC2": {
+            "group": "io",
             "provider": {
-                "name": "systemd:hare-consul-agent-c2",
-                "service": "hare-consul-agent-c2",
+                "name": "systemd:hare-hax-c2",
+                "service": "hare-hax-c2",
                 "interval": "10s",
                 "timeouts": [ "10s", "10s", "10s" ]
             },
             "dependencies": {
-                "predecessors" : ["RominigIP2"],
+                "predecessors" : ["MeroKernel", "Consul2"],
                 "colocation" : [],
                 "relation" : []
             },

@@ -1,0 +1,76 @@
+{
+    "s3": {
+        "S3Auth": {
+            "group": "io",
+            "provider": {
+                "name": "systemd:s3authserver",
+                "service": "s3authserver",
+                "interval": "30s",
+                "timeouts": [ "30s", "30s", "30s" ]
+            },
+            "dependencies": {
+                "predecessors" : ["Ldap"],
+                "colocation" : [],
+                "relation" : []
+            },
+            "ha": {
+                "mode": "active_active",
+                "clones" : {
+                    "active": [ 1, 2]
+                },
+                "location": {
+                    "${HA_nodes_eosnode1}": "INFINITY",
+                    "${HA_nodes_eosnode2}": "INFINITY"
+                }
+            }
+        },
+        "S3BackgroundConsumer": {
+            "group": "io",
+            "provider": {
+                "name": "systemd:s3backgroundconsumer",
+                "service": "s3backgroundconsumer",
+                "interval": "30s",
+                "timeouts": [ "30s", "30s", "30s" ]
+            },
+            "dependencies": {
+                "predecessors" : ["RabbitMQ"],
+                "colocation" : [],
+                "relation" : []
+            },
+            "ha": {
+                "mode": "active_active",
+                "clones" : {
+                    "active": [ 1, 2]
+                },
+                "location": {
+                    "${HA_nodes_eosnode1}": "INFINITY",
+                    "${HA_nodes_eosnode2}": "INFINITY"
+                }
+            }
+        },
+        "S3BackgroundProducer": {
+            "group": "io",
+            "provider": {
+                "name": "systemd:s3backgroundproducer",
+                "service": "s3backgroundproducer",
+                "interval": "30s",
+                "timeouts": [ "30s", "30s", "30s" ]
+            },
+            "dependencies": {
+                "predecessors" : ["RabbitMQ"],
+                "colocation" : [],
+                "relation" : []
+            },
+            "ha": {
+                "mode": "active_active",
+                "clones" : {
+                    "active": [ 1, 2]
+                },
+                "location": {
+                    "${HA_nodes_eosnode1}": "INFINITY",
+                    "${HA_nodes_eosnode2}": "INFINITY"
+                }
+            }
+        }
+    }
+}
