@@ -1,6 +1,6 @@
 {
     "kibana": {
-        "Kibana": {
+        "kibana": {
             "group": "common",
             "provider": {
                 "name": "systemd:kibana",
@@ -9,8 +9,8 @@
                 "timeouts": [ "10s", "10s", "10s" ]
             },
             "dependencies": {
-                "predecessors" : ["Elasticsearch"],
-                "colocation" : ["Elasticsearch"],
+                "predecessors" : ["els-search"],
+                "colocation" : ["els-search"],
                 "relation" : []
             },
             "ha": {

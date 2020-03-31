@@ -102,7 +102,7 @@ class PCSGenerator(Generator):
         output_file: output file generate by Generator
         """
         super(PCSGenerator, self).__init__(compiled_file, output_file, args_file)
-        self._cluster_cfg = "eoscluster_cfg"
+        self._cluster_cfg = (output_file.split('/')[len(output_file.split('/'))-1]).replace(".sh", ".xml")
         self._mode = {
             "active_passive": self._create_resource_active_passive,
             "active_active" : self._create_resource_active_active,

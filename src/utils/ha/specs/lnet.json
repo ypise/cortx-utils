@@ -1,6 +1,6 @@
 {
     "lnet": {
-        "Lnet": {
+        "lnet": {
             "group": "io",
             "provider": {
                 "name": "systemd:lnet",
@@ -24,7 +24,7 @@
                 }
             }
         },
-        "LnetC1": {
+        "lnet-c1": {
             "group": "io",
             "parameters": {
                 "iface": "${HA_io_lnet1_iface}",
@@ -37,8 +37,8 @@
                 "timeouts": [ "30s", "30s", "30s" ]
             },
             "dependencies": {
-                "predecessors" : ["RominigIP1"],
-                "colocation" : [],
+                "predecessors" : ["ip-c1", "ip-c2"],
+                "colocation" : ["ip-c1"],
                 "relation" : []
             },
             "ha": {
@@ -49,11 +49,11 @@
                 }
             }
         },
-        "LnetC2": {
+        "lnet-c2": {
             "group": "io",
             "parameters": {
-                "iface": "${HA_io_lnet1_iface}",
-                "nettype": "${HA_io_lnet1_nettype}"
+                "iface": "${HA_io_lnet2_iface}",
+                "nettype": "${HA_io_lnet2_nettype}"
             },
             "provider": {
                 "name": "ocf:seagate:lnet",
@@ -62,8 +62,8 @@
                 "timeouts": [ "30s", "30s", "30s" ]
             },
             "dependencies": {
-                "predecessors" : ["RominigIP2"],
-                "colocation" : [],
+                "predecessors" : ["ip-c1", "ip-c2"],
+                "colocation" : ["ip-c2"],
                 "relation" : []
             },
             "ha": {

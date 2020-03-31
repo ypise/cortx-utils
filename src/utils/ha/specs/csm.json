@@ -1,6 +1,6 @@
 {
     "csm": {
-        "CsmAgent": {
+        "csm-agent": {
             "group": "management",
             "provider": {
                 "name": "systemd:csm_agent",
@@ -9,9 +9,9 @@
                 "timeouts": [ "10s", "10s", "10s" ]
             },
             "dependencies": {
-                "predecessors" : [ "Consul1", "Kibana", "RabbitMQ" ],
-                "colocation" : [ "Consul1", "Kibana", "RabbitMQ" ],
-                "relation" : [ "Statsd" ]
+                "predecessors" : [ "consul-c1", "kibana", "rabbitmq" ],
+                "colocation" : [ "consul-c1", "kibana", "rabbitmq" ],
+                "relation" : [ "statsd" ]
             },
             "ha": {
                 "mode": "active_passive",
@@ -21,7 +21,7 @@
                 }
             }
         },
-        "CsmWeb": {
+        "csm-web": {
             "group": "management",
             "provider": {
                 "name": "systemd:csm_web",
@@ -30,8 +30,8 @@
                 "timeouts": [ "10s", "10s", "10s" ]
             },
             "dependencies": {
-                "predecessors" : [ "CsmAgent" ],
-                "colocation" : [ "CsmAgent" ],
+                "predecessors" : [ "csm-agent" ],
+                "colocation" : [ "csm-agent" ],
                 "relation" : [ ]
             },
             "ha": {

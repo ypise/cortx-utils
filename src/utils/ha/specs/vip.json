@@ -1,6 +1,6 @@
 {
     "vip": {
-        "CsmVip": {
+        "kibana-vip": {
             "group": "common",
             "parameters": {
                 "ip": "${HA_management_vip_ip}",
@@ -14,8 +14,8 @@
                 "timeouts": [ "10s", "10s", "10s" ]
             },
             "dependencies": {
-                "predecessors" : ["CsmWeb"],
-                "colocation" : ["CsmWeb"],
+                "predecessors" : ["csm-web"],
+                "colocation" : ["csm-web"],
                 "relation" : []
             },
             "ha": {
@@ -26,7 +26,7 @@
                 }
             }
         },
-        "RominigIP1": {
+        "ip-c1": {
             "group": "common",
             "parameters": {
                 "ip": "${HA_io_vip1_ip}",
@@ -41,7 +41,7 @@
                 "timeouts": [ "10s", "10s", "10s" ]
             },
             "dependencies": {
-                "predecessors" : ["Lnet"],
+                "predecessors" : ["lnet"],
                 "colocation" : [],
                 "relation" : []
             },
@@ -53,7 +53,7 @@
                 }
             }
         },
-        "RominigIP2": {
+        "ip-c2": {
             "group": "common",
             "parameters": {
                 "ip": "${HA_io_vip2_ip}",
@@ -68,7 +68,7 @@
                 "timeouts": [ "10s", "10s", "10s" ]
             },
             "dependencies": {
-                "predecessors" : ["Lnet"],
+                "predecessors" : ["lnet"],
                 "colocation" : [],
                 "relation" : []
             },
