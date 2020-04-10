@@ -198,22 +198,15 @@ class ElasticSearchQueryConverter(GenericQueryConverter):
 class ElasticSearchDataMapper:
     """ElasticSearch data mappings helper"""
 
-    def __init__(self, model: Type[BaseModel], mapping_type: str):
+    def __init__(self, model: Type[BaseModel]):
         """
 
         :param Type[BaseModel] model: model for constructing data mapping for index in ElasticSearch
         """
         self._model = model
-        self._mapping_type = mapping_type
-
-        if mapping_type is None:
-            raise DataAccessInternalError("Mapping type is not specified")
-
         self._mapping = {
             ESWords.MAPPINGS: {
-                mapping_type: {
-                    ESWords.PROPERTIES: {
-                    }
+                ESWords.PROPERTIES: {
                 }
             }
         }
@@ -226,7 +219,7 @@ class ElasticSearchDataMapper:
         :param Type[BaseType] property_type: type of property for given property `name`
         :return:
         """
-        properties = self._mapping[ESWords.MAPPINGS][self._mapping_type][ESWords.PROPERTIES]
+        properties = self._mapping[ESWords.MAPPINGS][ESWords.PROPERTIES]
 
         if name in properties:
             raise InternalError(f"Repeated property name in model: {name}")
@@ -325,12 +318,12 @@ class ElasticSearchDB(GenericDataBase):
         self._es_client = es_client
         self._tread_pool_exec = thread_pool_exec
         self._loop = loop or asyncio.get_event_loop()
-        self._mapping_type = collection  # Used as mapping type for particular index
+        self._collection = collection
 
         self._query_converter = ElasticSearchQueryConverter(model)
 
         # We are associating index name in ElasticSearch with given collection
-        self._index = self._mapping_type
+        self._index = self._collection
 
         if not isinstance(model, type) or not issubclass(model, BaseModel):
             raise DataAccessInternalError("Model parameter is not a Class object or not inherited "
@@ -398,23 +391,15 @@ class ElasticSearchDB(GenericDataBase):
 
         # self._obj_index = self._es_client.indices.get_alias("*")
         if indices.get(self._index, None) is None:
-            data_mappings = ElasticSearchDataMapper(self._model, self._mapping_type)
+            data_mappings = ElasticSearchDataMapper(self._model)
             mappings_dict = data_mappings.build_index_mappings(replication)
             # self._es_client.indices.create(index=model.__name__, ignore=400, body=mappings_dict)
-
-            # NOTE: for newly created indexes ElasticSearch mapping type and index name coincide
             await self._loop.run_in_executor(self._tread_pool_exec,
                                              _create, self._index, mappings_dict)
 
         self._index_info = await self._loop.run_in_executor(self._tread_pool_exec,
                                                             _get, self._index)
-
-        # NOTE: if ElasticSearch index was created outside from CSM Agent there
-        #  is no guarantee that index name and mapping type coincide
-        self._mapping_type = next(iter(self._index_info[self._index][ESWords.MAPPINGS].keys()), None)
-        if self._mapping_type is None:
-            raise DataAccessExternalError(f"There are no mapping type for ElasticSearch index {self._mapping_type}")
-        self._model_scheme = self._index_info[self._index][ESWords.MAPPINGS][self._mapping_type][ESWords.PROPERTIES]
+        self._model_scheme = self._index_info[self._index][ESWords.MAPPINGS][ESWords.PROPERTIES]
         self._model_scheme = {k.lower(): v for k, v in self._model_scheme.items()}
 
     async def store(self, obj: BaseModel):
