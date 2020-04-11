@@ -23,9 +23,9 @@ import json
 import networkx as nx
 import matplotlib.pyplot as plt
 
-from eos.utils.ha import const
-from eos.utils.ha.validation import SyntaxValidator
-from eos.utils.ha.validation import SymanticValidator
+from eos.utils.ha.hac import const
+from eos.utils.ha.hac.validation import SyntaxValidator
+from eos.utils.ha.hac.validation import SymanticValidator
 
 class Compiler:
     def __init__(self, source_path, compile_file, ha_spec_file):
