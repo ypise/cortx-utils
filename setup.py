@@ -19,7 +19,7 @@ import os
 import sys
 from setuptools import setup
 
-SPEC_DIR = "src/utils/ha/specs/"
+SPEC_DIR = "src/utils/ha/hac/specs/"
 _ROOT = os.path.abspath(os.path.dirname(__file__)) + "/" + SPEC_DIR
 specs = []
 for root, directories, filenames in os.walk(_ROOT):
@@ -43,17 +43,17 @@ setup(name='eos-py-utils',
       packages=['eos', 'eos.utils', 'eos.utils.cleanup',
                 'eos.utils.data', 'eos.utils.data.access', 'eos.utils.data.db',
                 'eos.utils.data.db.consul_db', 'eos.utils.data.db.elasticsearch_db',
-                'eos.utils.security', 'eos.utils.schema', 'eos.utils.ha'],
+                'eos.utils.security', 'eos.utils.schema', 'eos.utils.ha.hac'],
       package_data={
         'eos': ['py.typed'],
       },
       entry_points={
         'console_scripts': [
-            'hac = eos.utils.ha.hac:main'
+            'hac = eos.utils.ha.hac.hac:main'
         ]
       },
       data_files = [ ('/var/lib/eos/ha/specs', specs),
-                     ('/var/lib/eos/ha', ['src/utils/ha/args.yaml', 'src/utils/ha/re_build.sh'])],
+                     ('/var/lib/eos/ha', ['src/utils/ha/hac/args.yaml', 'src/utils/ha/hac/re_build.sh'])],
       long_description=long_description,
       zip_safe=False,
       python_requires='>=3.6.8',

@@ -47,9 +47,9 @@ $ hac --generate compiled.json --output eos_pcs.sh --target pcs
 
 
 def main():
-    from eos.utils.ha.compile import Compiler
-    from eos.utils.ha import generate
-    from eos.utils.ha import const
+    from eos.utils.ha.hac.compile import Compiler
+    from eos.utils.ha.hac import generate
+    from eos.utils.ha.hac import const
 
     provider = {
         "pcs": generate.PCSGeneratorResource,
