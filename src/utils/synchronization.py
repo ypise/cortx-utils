@@ -17,11 +17,11 @@
  ****************************************************************************
 """
 
-from asyncio import Event
+import asyncio
 from eos.utils.errors import InternalError
 
 
-class ThreadSafeEvent(Event):
+class ThreadSafeEvent(asyncio.Event):
     """Attempt to add thread-safe feature to the asyncio.Event class.
 
     Standard asyncio.Event class is not thread safe. From other side, threading.Event class is not
