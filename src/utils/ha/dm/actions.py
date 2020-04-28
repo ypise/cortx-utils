@@ -2,15 +2,14 @@
 
 """
  ****************************************************************************
- Filename:          __init__.py
- _description:      Init file for db module
+ Filename:          actions.py
+ Description:       Action Keys File
 
- Creation Date:     6/10/2019
- Author:            Dmitry Didenko
-                    Alexander Nogikh
+ Creation Date:     24/04/2020
+ Author:            Prathamesh Rodi
 
  Do NOT modify or remove this copyright and confidentiality notice!
- Copyright (c) 2001 - $Date: 2015/01/14 $ Seagate Technology, LLC.
+ Copyright (c) 2001 - : 2015/01/14 $ Seagate Technology, LLC.
  The code contained herein is CONFIDENTIAL to Seagate Technology, LLC.
  Portions are also trade secret. Any use, duplication, derivation, distribution
  or disclosure of this code, for any reason, not expressly authorized is
@@ -18,7 +17,9 @@
  ****************************************************************************
 """
 
-from .base_model import BaseModel
-from .filters import And, Or, Compare, IFilter, IFilterTreeVisitor
-from .queries import Query, ExtQuery, SortOrder, SortBy, QueryLimits, DateTimeRange
-from .storage import IDataBase, AbstractDataBaseProvider
+
+class Action:
+    FAILED = "failed"
+    RESOLVED = "resolved"
+    OK = "ok"
+    RESTART = "restart"
