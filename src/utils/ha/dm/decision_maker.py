@@ -105,17 +105,17 @@ class DecisionMaker(object):
         self._conf = Json(os.path.join(\
             const.CORTX_HA_INSTALL_PATH, const.CONF_FILE_PATH)).load()
 
-    def _get_data_nw_interface(self, node_id):
+    def _get_data_nw_interface(self, host_id):
         interface = []
         if self._conf:
-            interface = self._conf.get(const.NETWORK).get(node_id).get\
+            interface = self._conf.get(const.NETWORK).get(host_id).get\
                 (const.DATA_IFACE)
         return interface
 
-    def _get_mgmt_nw_interface(self, node_id):
+    def _get_mgmt_nw_interface(self, host_id):
         interface = []
         if self._conf:
-            interface = self._conf.get(const.NETWORK).get(node_id).get\
+            interface = self._conf.get(const.NETWORK).get(host_id).get\
                 (const.MGMT_IFACE)
         return interface
 
@@ -168,6 +168,7 @@ class DecisionMaker(object):
         resource_type = info.get(const.RESOURCE_TYPE)
         resource_id = info.get(const.RESOURCE_ID)
         node_id = info.get(const.NODE_ID)
+        host_id = sensor_response.get(const.HOST_ID)
         """
         1. Setting event time.
         """
@@ -198,7 +199,7 @@ class DecisionMaker(object):
         3. Setting entity_id
         """
         if info_dict[const.ENTITY] == const.NODE:
-            info_dict[const.ENTITY_ID] = node_id
+            info_dict[const.ENTITY_ID] = host_id
         else:
             info_dict[const.ENTITY_ID] = "0"
 
@@ -213,9 +214,11 @@ class DecisionMaker(object):
             We have to perform some checks if component is not present in
             reource_type field.
             1. For storage connectivity we have component = connectivity
+            2. For storage connectivity we have component_id = node/host id
             """
             if info_dict[const.ENTITY] == const.ENCLOSURE:
                 info_dict[const.COMPONENT] = const.CONNECTIVITY
+                info_dict[const.COMPONENT_ID] = host_id
 
         """
         5. Setting component id
@@ -226,8 +229,8 @@ class DecisionMaker(object):
             from config to know whether if is data or management interface.
             """
             info_dict[const.COMPONENT_ID] = self._get_component_id_for_nic(\
-                node_id, resource_id)
-        elif resource_type != const.IEM:
+                host_id, resource_id)
+        elif resource_type not in (const.IEM, const.ENCLOSURE):
             """
             For IEM the component id is fetched from specific info's component
             id field
@@ -236,19 +239,19 @@ class DecisionMaker(object):
 
         return info_dict
 
-    def _get_component_id_for_nic(self, node_id, resource_id):
+    def _get_component_id_for_nic(self, host_id, resource_id):
         component_id = ""
         """
         First checking if resource is found in data_nw.
         """
-        nw_interface = self._get_data_nw_interface(node_id)
+        nw_interface = self._get_data_nw_interface(host_id)
         if resource_id in nw_interface:
             component_id = const.DATA
         else:
             """
             Since resource not found in data_nw lets serach is mgmt_nw.
             """
-            nw_interface = self._get_mgmt_nw_interface(node_id)
+            nw_interface = self._get_mgmt_nw_interface(host_id)
             if resource_id in nw_interface:
                 component_id = const.MGMT
         return component_id

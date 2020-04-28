@@ -33,6 +33,7 @@ class TestDecisionMaker(unittest.TestCase):
         res_type = self.json_alert_data["message"]["sensor_response_type"]["info"]["resource_type"]
         res_id = self.json_alert_data["message"]["sensor_response_type"]["info"]["resource_id"]
         node_id = self.json_alert_data["message"]["sensor_response_type"]["info"]["node_id"]
+        host_id = self.json_alert_data["message"]["sensor_response_type"]["host_id"]
         event_time = self.json_alert_data["message"]["sensor_response_type"]["info"]["event_time"]
         alert_type = self.json_alert_data["message"]["sensor_response_type"]["alert_type"]
         severity = self.json_alert_data["message"]["sensor_response_type"]["severity"]
@@ -41,8 +42,11 @@ class TestDecisionMaker(unittest.TestCase):
         if entity == "enclosure":
             entity_id = '0'
         else:
-            entity_id = node_id
-        component_id = res_id
+            entity_id = host_id
+        if res_type == "enclosure":
+            component_id = host_id
+        else:
+            component_id = res_id
 
         action = ''
         res_type_data = self.rules_data[res_type]
