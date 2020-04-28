@@ -35,7 +35,8 @@ from eos.utils.data.access import Query, SortOrder, IDataBase
 from eos.utils.data.access import ExtQuery
 from eos.utils.data.db import GenericDataBase, GenericQueryConverter
 from eos.utils.data.access import BaseModel
-from eos.utils.errors import DataAccessExternalError, DataAccessInternalError, DataAccessError
+from eos.utils.errors import DataAccessExternalError, DataAccessInternalError, \
+    DataAccessError
 from eos.utils.data.access.filters import FilterOperationCompare
 from eos.utils.data.access.filters import ComparisonOperation, IFilter
 
@@ -43,13 +44,11 @@ CONSUL_ROOT = "eos/base"
 OBJECT_DIR = "obj"
 PROPERTY_DIR = "prop"
 
-
 class ConsulWords:
     """Consul service words"""
 
     VALUE = "Value"
     KEY = "Key"
-
 
 def field_to_str(field: Union[str, BaseType]) -> str:
     """
@@ -63,8 +62,8 @@ def field_to_str(field: Union[str, BaseType]) -> str:
     elif isinstance(field, BaseType):
         return field.name
     else:
-        raise DataAccessInternalError("Failed to convert field to string representation")
-
+        raise DataAccessInternalError(
+            "Failed to convert field to string representation")
 
 class ConsulQueryConverterWithData(GenericQueryConverter):
     """
@@ -86,20 +85,23 @@ class ConsulQueryConverterWithData(GenericQueryConverter):
             ComparisonOperation.OPERATION_GEQ: operator.ge,
             ComparisonOperation.OPERATION_LEQ: operator.le,
             ComparisonOperation.OPERATION_GT: operator.gt,
-            ComparisonOperation.OPERATION_LT: operator.lt
+            ComparisonOperation.OPERATION_LT: operator.lt,
+            ComparisonOperation.OPERATION_LIKE: operator.contains
         }
         self._raw_data = None
         self._object_data = None
 
     def _filter(self, suitable_keys: List[str]):
-        return filter(lambda x: x[ConsulWords.KEY] in suitable_keys, self._raw_data)
+        return filter(lambda x: x[ConsulWords.KEY] in suitable_keys,
+                      self._raw_data)
 
     def build(self, root: IFilter, raw_data: List[Dict]):
         # TODO: may be, we should move this method to the entity that processes
         # Query objects
         self._raw_data = raw_data
         self._object_data = {
-            entry[ConsulWords.KEY]: self._model(json.loads(entry[ConsulWords.VALUE])) for entry in
+            entry[ConsulWords.KEY]: self._model(
+                json.loads(entry[ConsulWords.VALUE])) for entry in
             self._raw_data}
         return self._filter(root.accept_visitor(self))
 
@@ -112,20 +114,23 @@ class ConsulQueryConverterWithData(GenericQueryConverter):
 
         op = entry.get_operation()
         try:
-            right_operand = getattr(self._model, field_str).to_native(entry.get_right_operand())
+            right_operand = getattr(self._model, field_str).to_native(
+                entry.get_right_operand())
         except ConversionError as e:
             raise DataAccessInternalError(f"{e}")
+        if not entry.get_operation() != ComparisonOperation.OPERATION_LIKE:
+            return set(entry_key for entry_key in filter(lambda x: self._operator[op](
+            getattr(self._object_data[x], field_str),right_operand),
+                                                         self._object_data.keys()))
+        else:
+            return set(entry_key for entry_key in filter(lambda x: self._operator[op](
+                right_operand, getattr(self._object_data[x], field_str)),
+                                                         self._object_data.keys()))
 
-        return set(entry_key for entry_key in
-                   filter(lambda x: self._operator[op](getattr(self._object_data[x], field_str),
-                                                       right_operand),
-                          self._object_data.keys()))
-
-
-def query_converter_build(model: BaseModel, filter_obj: IFilter, raw_data: List[Dict]):
+def query_converter_build(model: BaseModel, filter_obj: IFilter,
+                          raw_data: List[Dict]):
     query_converter = ConsulQueryConverterWithData(model)
     return query_converter.build(filter_obj, raw_data)
-
 
 class ConsulKeyTemplate:
     """Class-helper for storing consul key structure"""
@@ -149,13 +154,18 @@ class ConsulKeyTemplate:
         :param str object_type: BaseModel type or collection
         :return:
         """
-        self._object_root = Template(self._object_root.substitute(OBJECT_TYPE=object_type))
-        self._object_dir = Template(self._object_dir.substitute(OBJECT_TYPE=object_type))
-        self._object_path = Template(self._object_path.safe_substitute(OBJECT_TYPE=object_type))
-        self._property_dir = Template(self._property_dir.safe_substitute(OBJECT_TYPE=object_type))
+        self._object_root = Template(
+            self._object_root.substitute(OBJECT_TYPE=object_type))
+        self._object_dir = Template(
+            self._object_dir.substitute(OBJECT_TYPE=object_type))
+        self._object_path = Template(
+            self._object_path.safe_substitute(OBJECT_TYPE=object_type))
+        self._property_dir = Template(
+            self._property_dir.safe_substitute(OBJECT_TYPE=object_type))
         self._object_type_is_set = True
 
-    def _render_template(self, template: Union[Template, str], object_type: str = None, **kwargs):
+    def _render_template(self, template: Union[Template, str],
+                         object_type: str = None, **kwargs):
         if not self._object_type_is_set and object_type is None:
             raise DataAccessInternalError("Need to set object type")
         elif object_type is not None:
@@ -173,11 +183,11 @@ class ConsulKeyTemplate:
         return self._render_template(self._object_path, object_type=object_type,
                                      OBJECT_UUID=object_uuid)
 
-    def get_property_dir(self, property_name: str, property_value: str, object_type: str = None):
+    def get_property_dir(self, property_name: str, property_value: str,
+                         object_type: str = None):
         return self._render_template(self._property_dir, object_type=object_type,
                                      PROPERTY_NAME=property_name,
                                      PROPERTY_VALUE=property_value)
-
 
 class ConsulDB(GenericDataBase):
     """Consul Storage Interface Implementation"""
@@ -186,8 +196,10 @@ class ConsulDB(GenericDataBase):
     thread_pool = None
     loop = None
 
-    def __init__(self, consul_client: Consul, model: Type[BaseModel], collection: str,
-                 process_pool: ThreadPoolExecutor, loop: asyncio.AbstractEventLoop = None):
+    def __init__(self, consul_client: Consul, model: Type[BaseModel],
+                 collection: str,
+                 process_pool: ThreadPoolExecutor,
+                 loop: asyncio.AbstractEventLoop = None):
         """
 
         :param Consul consul_client: consul client
@@ -202,8 +214,9 @@ class ConsulDB(GenericDataBase):
         self._query_converter = ConsulQueryConverterWithData(model)
 
         if not isinstance(model, type) or not issubclass(model, BaseModel):
-            raise DataAccessInternalError("Model parameter is not a Class object or not inherited "
-                                          "from eos.utils.data.access.BaseModel")
+            raise DataAccessInternalError(
+                "Model parameter is not a Class object or not inherited "
+                "from eos.utils.data.access.BaseModel")
         self._model = model  # Needed to build returning objects
 
         # self._query_service = ConsulQueryService(self._collection, self._consul_client,
@@ -218,7 +231,8 @@ class ConsulDB(GenericDataBase):
         self._model_scheme = dict()
 
     @classmethod
-    async def create_database(cls, config, collection: str, model: Type[BaseModel]) -> IDataBase:
+    async def create_database(cls, config, collection: str,
+                              model: Type[BaseModel]) -> IDataBase:
         """
         Creates new instance of Consul KV DB and performs necessary initializations
 
@@ -232,20 +246,24 @@ class ConsulDB(GenericDataBase):
         if not all((cls.consul_client, cls.thread_pool, cls.loop)):
             cls.loop = asyncio.get_event_loop()
             try:
-                cls.consul_client = Consul(host=config.host, port=config.port, loop=cls.loop)
+                cls.consul_client = Consul(host=config.host, port=config.port,
+                                           loop=cls.loop)
             except ConnectionRefusedError as e:
                 raise DataAccessExternalError(f"{e}")
             # needed to perform tree traversal in non-blocking mode
-            cls.thread_pool = ThreadPoolExecutor(max_workers=multiprocessing.cpu_count())
+            cls.thread_pool = ThreadPoolExecutor(
+                max_workers=multiprocessing.cpu_count())
 
-        consul_db = cls(cls.consul_client, model, collection, cls.thread_pool, cls.loop)
+        consul_db = cls(cls.consul_client, model, collection, cls.thread_pool,
+                        cls.loop)
 
         try:
             await consul_db.create_object_root()
         except ClientConnectorError as e:
             raise DataAccessExternalError(f"{e}")
         except Exception as e:
-            raise DataAccessError(f"Some unknown exception occurred in Consul module: {e}")
+            raise DataAccessError(
+                f"Some unknown exception occurred in Consul module: {e}")
 
         return consul_db
 
@@ -255,6 +273,7 @@ class ConsulDB(GenericDataBase):
 
         :return:
         """
+
         async def _create_obj_dir():
             """
             Create obj dir if it does not exist and load model_scheme
@@ -264,7 +283,8 @@ class ConsulDB(GenericDataBase):
             if _data is None:
                 self._model_scheme = dict.fromkeys(self._model.fields.keys())
                 _response = await self._consul_client.kv.put(obj_dir,
-                                                             json.dumps(self._model_scheme))
+                                                             json.dumps(
+                                                                 self._model_scheme))
                 if not _response:
                     raise DataAccessExternalError(f"Can't put key={obj_root} and "
                                                   f"value={str(creation_time)}")
@@ -277,7 +297,8 @@ class ConsulDB(GenericDataBase):
         if data is None:
             # maybe need to post creation time
             creation_time = datetime.now()
-            response = await self._consul_client.kv.put(obj_root, str(creation_time))
+            response = await self._consul_client.kv.put(obj_root,
+                                                        str(creation_time))
             if not response:
                 raise DataAccessExternalError(f"Can't put key={obj_root} and "
                                               f"value={str(creation_time)}")
@@ -299,12 +320,14 @@ class ConsulDB(GenericDataBase):
         obj_val = json.dumps(obj.to_primitive())
         response = await self._consul_client.kv.put(obj_path, obj_val)
         if not response:
-            raise DataAccessExternalError(f"Can't put key={obj_path} and value={obj_val}")
+            raise DataAccessExternalError(
+                f"Can't put key={obj_path} and value={obj_val}")
 
     async def _get_all_raw(self) -> List[Dict]:
         obj_dir = self._templates.get_object_dir()
         obj_dir = obj_dir.lower() + "/"  # exclude key eos/base/type/obj without trailing "/"
-        index, data = await self._consul_client.kv.get(obj_dir, recurse=True, consistency=True)
+        index, data = await self._consul_client.kv.get(obj_dir, recurse=True,
+                                                       consistency=True)
         if data is None:
             return list()
         return data
@@ -316,6 +339,7 @@ class ConsulDB(GenericDataBase):
         :param query:
         :return: empty list or list with objects which satisfy the passed query condition
         """
+
         def _sorted_key_func(_by_field, _field_type):
             """
             Generates key function for built-in sorted function to perform correct sorting
@@ -345,12 +369,13 @@ class ConsulDB(GenericDataBase):
                                                                suitable_models)
 
         base_models = [self._model(json.loads(entry[ConsulWords.VALUE]))
-                      for entry in suitable_models]
+                       for entry in suitable_models]
 
         # NOTE: if offset parameter is set in Query then order_by option is enabled automatically
         if any((query.order_by, query.offset)):
-            field = query.order_by.field if query.order_by else getattr(self._model,
-                                                                        self._model.primary_key)
+            field = query.order_by.field if query.order_by else getattr(
+                self._model,
+                self._model.primary_key)
             field_str = field_to_str(field)
 
             field_type = type(getattr(self._model, field_str))
@@ -360,12 +385,14 @@ class ConsulDB(GenericDataBase):
             base_models = sorted(base_models, key=key, reverse=reverse)
 
         offset = query.offset or 0
-        limit = offset + query.limit if query.limit is not None else len(base_models)
+        limit = offset + query.limit if query.limit is not None else len(
+            base_models)
         # NOTE: if query.limit is None then slice will be from offset to the end of array
         #  slice(0, None) means that start is 0 and stop is not specified
         if offset < 0 or limit < 0:
-            raise DataAccessInternalError("Wrong offset and limit parameters of Query object: "
-                                          f"offset={query.offset}, limit={query.limit}")
+            raise DataAccessInternalError(
+                "Wrong offset and limit parameters of Query object: "
+                f"offset={query.offset}, limit={query.limit}")
         model_slice = slice(offset, limit)
         return base_models[model_slice]
 
@@ -391,7 +418,7 @@ class ConsulDB(GenericDataBase):
                                                            filter_obj,
                                                            raw_data)
         base_models = [self._model(json.loads(entry[ConsulWords.VALUE]))
-                      for entry in suitable_models]
+                       for entry in suitable_models]
 
         for model in base_models:
             # use any to invoke map over each parameter
@@ -424,14 +451,16 @@ class ConsulDB(GenericDataBase):
         if not suitable_models:
             return 0  # No models are deleted
 
-        tasks = [asyncio.ensure_future(self._consul_client.kv.delete(model[ConsulWords.KEY])) for
+        tasks = [asyncio.ensure_future(
+            self._consul_client.kv.delete(model[ConsulWords.KEY])) for
                  model in suitable_models]
 
         done, pending = await asyncio.wait(tasks)
 
         for task in done:
             if not task.result():
-                raise DataAccessInternalError(f"Error happens during object deleting")
+                raise DataAccessInternalError(
+                    f"Error happens during object deleting")
 
         return len(suitable_models)
 
@@ -440,7 +469,8 @@ class ConsulDB(GenericDataBase):
         obj_path = obj_path.lower()
         response = await self._consul_client.kv.delete(obj_path)
         if not response:
-            raise DataAccessExternalError(f"Error happens during object deleting with id={obj_id}")
+            raise DataAccessExternalError(
+                f"Error happens during object deleting with id={obj_id}")
 
     async def count(self, filter_obj: IFilter = None) -> int:
         """
@@ -474,3 +504,6 @@ class ConsulDB(GenericDataBase):
         :return:
         """
         pass
+
+    async def get_by_prefix(self):
+        """"""
