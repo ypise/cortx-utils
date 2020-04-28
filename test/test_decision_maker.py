@@ -3,9 +3,11 @@
 import os
 import unittest
 from unittest.mock import MagicMock
+import asyncio
 
 from eos.utils.ha.dm.decision_maker import DecisionMaker
 from eos.utils.schema.payload import Json, JsonMessage
+from eos.utils.ha.dm.repository.decisiondb import DecisionDB
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 file_path = os.path.join(dir_path, 'test_alert.json')
@@ -19,17 +21,18 @@ class TestDecisionMaker(unittest.TestCase):
         "enclosure:fru:controller": ("enclosure", "controller")
         }
 
-    mock_decisiondb = MagicMock()
+    mock_decisiondb = DecisionDB()
     _dec_maker = DecisionMaker(decisiondb=mock_decisiondb)
     json_alert_data = Json(file_path).load()
     rules_data = Json(rules_schema_path).load()
+    _loop = asyncio.get_event_loop()
 
     def test_handle_alert(self):
         """tests handle_alert functio of DecisionMaker class"""
 
         assert self.json_alert_data is not None
         self.assertTrue(isinstance(self.json_alert_data, dict))
-        self._dec_maker.handle_alert(self.json_alert_data)
+        self._loop.run_until_complete(self._dec_maker.handle_alert(self.json_alert_data))
         res_type = self.json_alert_data["message"]["sensor_response_type"]["info"]["resource_type"]
         res_id = self.json_alert_data["message"]["sensor_response_type"]["info"]["resource_id"]
         node_id = self.json_alert_data["message"]["sensor_response_type"]["info"]["node_id"]
