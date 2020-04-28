@@ -83,6 +83,7 @@ class ComparisonOperation(Enum):
     OPERATION_LEQ = '<='
     OPERATION_GEQ = '>='
     OPERATION_NE = "!="  # TODO: Add support to elasticsearch
+    OPERATION_LIKE = "like" # TODO: Add support to elasticsearch
 
     @classmethod
     def from_standard_representation(cls, op: str):
@@ -92,7 +93,8 @@ class ComparisonOperation(Enum):
             '<': cls.OPERATION_LT,
             '>=': cls.OPERATION_GEQ,
             '<=': cls.OPERATION_LEQ,
-            "!=": cls.OPERATION_NE
+            "!=": cls.OPERATION_NE,
+            "like": cls.OPERATION_LIKE
         }
 
         if op in mapping:

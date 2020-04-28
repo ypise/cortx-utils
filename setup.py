@@ -44,6 +44,8 @@ setup(name='eos-py-utils',
                 'eos.utils.data', 'eos.utils.data.access', 'eos.utils.data.db',
                 'eos.utils.data.db.consul_db', 'eos.utils.data.db.elasticsearch_db',
                 'eos.utils.security', 'eos.utils.schema', 'eos.utils.ha.hac',
+                'eos.utils.ha.dm', 'eos.utils.ha.dm.models',
+                'eos.utils.ha.dm.repository',
                 'eos.utils.ha'],
       package_data={
         'eos': ['py.typed'],

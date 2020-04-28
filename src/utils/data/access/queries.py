@@ -18,16 +18,30 @@
  ****************************************************************************
 """
 
-from schematics.types import BaseType
-
-from eos.utils.data.access.filters import IFilter
+import datetime
 from enum import Enum
-
+from typing import Optional
+from schematics.types import BaseType
+from eos.utils.data.access.filters import IFilter
 
 class SortOrder(Enum):
     ASC = "asc"
     DESC = "desc"
 
+class SortBy:
+    def __init__(self, field, order: SortOrder):
+        self.field = field
+        self.order = order
+
+class QueryLimits:
+    def __init__(self, limit: Optional[int], offset: Optional[int]):
+        self.limit = limit
+        self.offset = offset
+
+class DateTimeRange:
+    def __init__(self, start, end):
+        self.start = start
+        self.end = end
 
 class OrderBy:
 
