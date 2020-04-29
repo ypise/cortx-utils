@@ -1,8 +1,8 @@
 #!/usr/bin/python3.6
 
-CORTX_HA_INSTALL_PATH = "/opt/seagate/cortx/ha/"
-RULES_FILE_PATH = "conf/rules_engine_schema.json"
-CONF_FILE_PATH = "conf/decision_monitor_conf.json"
+CORTX_HA_INSTALL_PATH = "/etc/cortx/ha/"
+RULES_FILE_PATH = "rules_engine_schema.json"
+CONF_FILE_PATH = "decision_monitor_conf.json"
 MESSAGE = "message"
 SENSOR_RES_TYPE = "sensor_response_type"
 INFO = "info"
@@ -33,3 +33,4 @@ MGMT_IFACE = "mgmt_iface"
 HOST_ID = "host_id"
 NODES = "nodes"
 CONTROLLER = "controller"
+MODULE_ID = "module_id"
