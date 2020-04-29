@@ -69,24 +69,41 @@ class RuleEngine(object):
         """
         Log.debug(f"Evaluating alert: {alert}")
         action = None
+        component_id = ""
+        module_id = ""
         if not self._rules_schema:
             return action
         sensor_response = alert.get(const.MESSAGE).get(const.SENSOR_RES_TYPE)
         res_type = sensor_response.get(const.INFO).get(const.RESOURCE_TYPE)
-        alert_type = sensor_response.get(const.ALERT_TYPE)
-        severity = sensor_response.get(const.SEVERITY)
         if res_type is None:
             return action
+        alert_type = sensor_response.get(const.ALERT_TYPE)
+        severity = sensor_response.get(const.SEVERITY)
+        """
+        In case of IEM alerts for fetching the rules we will have to make use
+        of two additional fields
+        1. componenet id
+        2. module id.
+        """
+        if res_type == const.IEM:
+            component_id = sensor_response.get(const.SPECIFIC_INFO).get\
+                (const.COMPONENT_ID)
+            module_id = sensor_response.get(const.SPECIFIC_INFO).get\
+                (const.MODULE_ID)
         res_type_data = self._rules_schema[res_type]
         if res_type_data is not None:
             for item in res_type_data:
                 if alert_type == item[const.ALERT_TYPE] and \
                     severity == item[const.SEVERITY]:
-                    action = item[const.ACTION]
+                    if res_type == const.IEM:
+                        if component_id == item[const.COMPONENT_ID] and \
+                            module_id == item[const.MODULE_ID]:
+                            action = item[const.ACTION]
+                    else:
+                        action = item[const.ACTION]
         Log.debug(f"Found {action} action for resource: {res_type} with alert type:\
             {alert_type} and severity: {severity}.")
         return action
-
 
 class DecisionMaker(object):
     """
