@@ -115,6 +115,12 @@ class DecisionMaker(object):
                 (const.MGMT_IFACE)
         return interface
 
+    async def _get_host_id(self, node_id):
+        host_id = ""
+        if self._conf:
+            host_id = self._conf.get(const.NODES).get(node_id)
+        return host_id
+
     async def handle_alert(self, alert):
         """
         Accepts alert in the dict format and validates the same
@@ -159,7 +165,7 @@ class DecisionMaker(object):
         resource_type = info.get(const.RESOURCE_TYPE)
         resource_id = info.get(const.RESOURCE_ID)
         node_id = info.get(const.NODE_ID)
-        host_id = sensor_response.get(const.HOST_ID)
+        host_id = await self._get_host_id(node_id)
         """
         1. Setting event time.
         """
@@ -214,7 +220,9 @@ class DecisionMaker(object):
         """
         5. Setting component id
         """
-        if resource_type == const.NIC:
+        if info_dict[const.COMPONENT] == const.CONTROLLER:
+            info_dict[const.COMPONENT_ID] = host_id
+        elif resource_type == const.NIC:
             """
             If resource_type is node:interface:nw, then we will read the values
             from config to know whether if is data or management interface.
