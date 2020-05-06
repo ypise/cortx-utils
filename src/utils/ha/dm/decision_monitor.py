@@ -48,11 +48,14 @@ class DecisionMonitor:
         :return:
         """
         resource_key = self._resource_file.get("resources", {}).get(resource, {})
-        resource_data = self._loop.run_until_complete(
-            self._decisiondb.get_event_time(**resource_key,
-                                            sort_by=SortBy(
-                                                DecisionModel.alert_time,
-                                                SortOrder.DESC)))
+        try:
+            resource_data = self._loop.run_until_complete(
+                self._decisiondb.get_event_time(**resource_key,
+                    sort_by=SortBy(DecisionModel.alert_time, SortOrder.DESC)))
+        except Exception as e:
+            # Return OK if Failed to Fetch Resource Status.
+            Log.error(f"{e}")
+            return Action.OK
         if resource_data:
             return resource_data[0].action
         return Action.OK
@@ -63,12 +66,20 @@ class DecisionMonitor:
         :param resource_group: Name of Resource Group.
         :return:
         """
+        group_status = []
+        # Fetch List of Resources in group
         resources = self._resource_file.get("resource_groups", {}).get(
             resource_group, [])
         for resource in resources:
+            # Check's the status for each resource.
             status = self.get_resource_status(resource)
             if status in [Action.FAILED]:
+                # Return Failed if any one is Failed Status in RG.
                 return status
+            group_status.append(status)
+        if Action.RESOLVED in group_status:
+            #  Return Resolved if none is Failed and any one is resolved Status in RG.
+            return Action.RESOLVED
         return Action.OK
 
     def acknowledge_resource(self, resource):
@@ -79,9 +90,10 @@ class DecisionMonitor:
         """
         resource_key = self._resource_file.get("resources", {}).get(resource, {})
         try:
-            self._loop.run_until_complete(
-                self._decisiondb.delete_event(**resource_key))
-        except DataAccessInternalError as e:
+            if not self.get_resource_status(resource) == Action.FAILED:
+                self._loop.run_until_complete(
+                    self._decisiondb.delete_event(**resource_key))
+        except Exception as e:
             Log.error(f"{e}")
 
     def acknowledge_resource_group(self, resource_group):
