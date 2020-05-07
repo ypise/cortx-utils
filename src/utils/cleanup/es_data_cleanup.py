@@ -63,7 +63,9 @@ class esCleanup(object):
             if not os.path.exists(path): os.makedirs(path)
         except OSError as err:
             if err.errno != errno.EEXIST: raise
-        logger = logging.getLogger()
+        # added hardcoded logger "util_log" to avoid duplicate log
+        # in csm_cleanup.log
+        logger = logging.getLogger("util_log")
         logger.setLevel(logging.INFO)
         format = '%(name)s %(levelname)s %(message)s'
         formatter = logging.Formatter(format)
