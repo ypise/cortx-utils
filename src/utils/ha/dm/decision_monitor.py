@@ -47,6 +47,7 @@ class DecisionMonitor:
         :param resource: Name of Resource :type: str
         :return:
         """
+        Log.debug(f"Received Status Request for resource {resource}")
         resource_key = self._resource_file.get("resources", {}).get(resource, {})
         try:
             resource_data = self._loop.run_until_complete(
@@ -67,6 +68,7 @@ class DecisionMonitor:
         :return:
         """
         group_status = []
+        Log.debug(f"Received Status Request for resource group {resource_group}")
         # Fetch List of Resources in group
         resources = self._resource_file.get("resource_groups", {}).get(
             resource_group, [])
@@ -88,6 +90,7 @@ class DecisionMonitor:
         :param resource:
         :return:
         """
+        Log.debug(f"Received Acknowledge Request for resource {resource}")
         resource_key = self._resource_file.get("resources", {}).get(resource, {})
         try:
             if not self.get_resource_status(resource) == Action.FAILED:
@@ -102,6 +105,7 @@ class DecisionMonitor:
         :param resource_group:
         :return:
         """
+        Log.debug(f"Received Acknowledge Request for resource group {resource_group}")
         resources = self._resource_file.get("resource_groups", {}).get(
             resource_group, [])
         for resource in resources:
