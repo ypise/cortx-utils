@@ -21,6 +21,7 @@ from eos.utils.data.access.filters import Compare
 from eos.utils.data.db.db_provider import DataBaseProvider, GeneralConfig
 from eos.utils.ha.dm.models.decisiondb import DecisionModel
 from eos.utils.schema import database
+from eos.utils.log import Log
 
 class DecisionDB:
     """
@@ -48,6 +49,7 @@ class DecisionDB:
         decision_id = DecisionModel.create_decision_id(entity, entity_id,
                                                        component, component_id,
                                                        alert_time)
+        Log.debug(f"Loading event for {decision_id} Action:- {action}")
         # Generate Decision DB Object.
         decision = DecisionModel.instantiate_decision(decision_id=decision_id,
                                                       action=action,
@@ -70,6 +72,7 @@ class DecisionDB:
         decision_id = DecisionModel.create_decision_id(entity, entity_id,
                                                        component, component_id,
                                                        alert_time)
+        Log.debug(f"Fetch event for {decision_id}")
         # Create Query
         query = Query().filter_by(
             Compare(DecisionModel.decision_id, '=', decision_id))
@@ -88,6 +91,7 @@ class DecisionDB:
         # Generate Key
         decision_id = DecisionModel.create_decision_id(entity, entity_id,
                                                        component, component_id)
+        Log.debug(f"Fetch event time for {decision_id}")
         # Create Query
         query = Query().filter_by(
             Compare(DecisionModel.decision_id, 'like', decision_id))
@@ -109,6 +113,7 @@ class DecisionDB:
         # Generate Key
         decision_id = DecisionModel.create_decision_id(entity, entity_id,
                                                        component, component_id)
+        Log.debug(f"Deleting event for {decision_id}")
         # Delete all the Decisions Related to The Event.
         await self.storage(DecisionModel).delete(
             Compare(DecisionModel.decision_id, 'like', decision_id))
