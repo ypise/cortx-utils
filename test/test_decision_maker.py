@@ -35,7 +35,6 @@ class TestDecisionMaker(unittest.TestCase):
         self._loop.run_until_complete(self._dec_maker.handle_alert(self.json_alert_data))
         res_type = self.json_alert_data["message"]["sensor_response_type"]["info"]["resource_type"]
         res_id = self.json_alert_data["message"]["sensor_response_type"]["info"]["resource_id"]
-        node_id = self.json_alert_data["message"]["sensor_response_type"]["info"]["node_id"]
         host_id = self.json_alert_data["message"]["sensor_response_type"]["host_id"]
         event_time = self.json_alert_data["message"]["sensor_response_type"]["info"]["event_time"]
         alert_type = self.json_alert_data["message"]["sensor_response_type"]["alert_type"]

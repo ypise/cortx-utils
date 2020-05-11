@@ -143,10 +143,13 @@ class DecisionMaker(object):
         Accepts alert in the dict format and validates the same
         alert against set of rules with the help of RuleEngine.
         """
-        if alert is not None:
-            action = self._rule_engine.evaluate_alert(alert)
-            if action is not None:
-                await self._store_action(alert, action)
+        try:
+            if alert is not None:
+                action = self._rule_engine.evaluate_alert(alert)
+                if action is not None:
+                    await self._store_action(alert, action)
+        except Exception as e:
+            Log.error(f"Error occured during alert handling. {e}")
 
     async def _store_action(self, alert, action):
         """
@@ -156,11 +159,15 @@ class DecisionMaker(object):
         entity: enclosure/node
         entity_id: resource id
         """
-        sensor_response = alert.get(const.MESSAGE).get(const.SENSOR_RES_TYPE)
-        info_dict = await self._set_db_key_info(sensor_response)
-        await self._decision_db.store_event(info_dict[const.ENTITY], \
-            info_dict[const.ENTITY_ID], info_dict[const.COMPONENT], \
-            info_dict[const.COMPONENT_ID], info_dict[const.EVENT_TIME], action)
+        try:
+            sensor_response = alert.get(const.MESSAGE).get(const.SENSOR_RES_TYPE)
+            info_dict = await self._set_db_key_info(sensor_response)
+            if info_dict:
+                await self._decision_db.store_event(info_dict[const.ENTITY], \
+                    info_dict[const.ENTITY_ID], info_dict[const.COMPONENT], \
+                    info_dict[const.COMPONENT_ID], info_dict[const.EVENT_TIME], action)
+        except Exception as e:
+            Log.error(f"Error occured during storing action. {e}")
 
     async def _set_db_key_info(self, sensor_response):
         """
@@ -189,7 +196,7 @@ class DecisionMaker(object):
         info_dict[const.EVENT_TIME] = info.get(const.EVENT_TIME)
         """
         Here resource type can be in 2 forms -
-        1. enclosure:fru:disk, node:os:disk_space etc
+        1. enclosure:fru:disk, node:os:disk_space, node:interface:nw:cable etc
         2. enclosure, iem
         Spliting the resource type will give us the entity and component fields.
         """
@@ -222,7 +229,7 @@ class DecisionMaker(object):
         We will check if we have got the component value in resource type.
         """
         if len(res_list) > 1:
-            info_dict[const.COMPONENT] = res_list[2]
+            info_dict[const.COMPONENT] = res_list[len(res_list) - 1]
         else:
             """
             We have to perform some checks if component is not present in
@@ -239,13 +246,20 @@ class DecisionMaker(object):
         """
         if info_dict[const.COMPONENT] == const.CONTROLLER:
             info_dict[const.COMPONENT_ID] = host_id
-        elif resource_type == const.NIC:
+        elif resource_type in (const.NIC, const.NIC_CABLE):
             """
-            If resource_type is node:interface:nw, then we will read the values
-            from config to know whether if is data or management interface.
+            If resource_type is node:interface:nw, node:interface:nw:cable
+            then we will read the values from config to know whether it is
+            data or management interface.
+            Since BMC interface is also included in NIC alert we do not have to
+            take any against against it.
+            In case we found the interface related to BMC so we will ignore it.
             """
-            info_dict[const.COMPONENT_ID] = await self._get_component_id_for_nic(\
-                host_id, resource_id)
+            comp_id = await self._get_component_id_for_nic(host_id, resource_id)
+            if comp_id:
+                info_dict[const.COMPONENT_ID] = comp_id
+            else:
+                info_dict = {}
         elif resource_type not in (const.IEM, const.ENCLOSURE):
             """
             For IEM the component id is fetched from specific info's component
