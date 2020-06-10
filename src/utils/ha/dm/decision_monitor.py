@@ -20,6 +20,7 @@
 import asyncio
 import os
 from typing import AnyStr
+import traceback
 
 from eos.utils.ha.dm.repository.decisiondb import DecisionDB
 from eos.utils.ha.dm.models.decisiondb import DecisionModel
@@ -36,10 +37,36 @@ class DecisionMonitor:
     """
 
     def __init__(self):
-        self._decisiondb = DecisionDB()
         self._resource_file = Json(
             os.path.join(const.CONF_PATH, const.DECISION_MAPPING_FILE)).load()
         self._loop = asyncio.get_event_loop()
+        self._consul_call = self.ConsulCallHandler(self._resource_file)
+
+    class ConsulCallHandler:
+        """
+        Handle async call to consul
+        """
+        def __init__(self, resource_file):
+            """
+            Initialize consul call handler
+            """
+            self._decisiondb = DecisionDB()
+            self._consul_timeout = resource_file.get("request_timeout", 3.0)
+
+        async def get(self, **resource_key):
+            """
+            Get consul data else raise error
+            """
+            return await asyncio.wait_for(self._decisiondb.get_event_time(**resource_key,
+                    sort_by=SortBy(DecisionModel.alert_time, SortOrder.DESC)),
+                    timeout=self._consul_timeout)
+
+        async def delete(self, **resource_key):
+            """
+            Delete consul data else raise error
+            """
+            await asyncio.wait_for(self._decisiondb.delete_event(**resource_key),
+                    timeout=self._consul_timeout)
 
     def get_resource_status(self, resource: AnyStr):
         """
@@ -51,11 +78,10 @@ class DecisionMonitor:
         resource_key = self._resource_file.get("resources", {}).get(resource, {})
         try:
             resource_data = self._loop.run_until_complete(
-                self._decisiondb.get_event_time(**resource_key,
-                    sort_by=SortBy(DecisionModel.alert_time, SortOrder.DESC)))
+                    self._consul_call.get(**resource_key))
         except Exception as e:
             # Return OK if Failed to Fetch Resource Status.
-            Log.error(f"{e}")
+            Log.error(f"{traceback.format_exc()} {e}")
             return Action.OK
         if resource_data:
             return resource_data[0].action
@@ -95,7 +121,7 @@ class DecisionMonitor:
         try:
             if not self.get_resource_status(resource) == Action.FAILED:
                 self._loop.run_until_complete(
-                    self._decisiondb.delete_event(**resource_key))
+                    self._consul_call.delete(**resource_key))
         except Exception as e:
             Log.error(f"{e}")
 
