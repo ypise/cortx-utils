@@ -15,12 +15,14 @@
  prohibited. All other rights are expressly reserved by Seagate Technology, LLC.
  ****************************************************************************
 """
+import os
 
+from eos.utils.schema.payload import Json
+from eos.utils.ha.hac import const
 from eos.utils.data.access import Query
 from eos.utils.data.access.filters import Compare
 from eos.utils.data.db.db_provider import DataBaseProvider, GeneralConfig
 from eos.utils.ha.dm.models.decisiondb import DecisionModel
-from eos.utils.schema import database
 from eos.utils.log import Log
 
 class DecisionDB:
@@ -30,7 +32,9 @@ class DecisionDB:
     """
 
     def __init__(self) -> None:
-        conf = GeneralConfig(database.DATABASE)
+        schema = Json(os.path.join(const.CONF_PATH,
+                                   const.HA_DATABADE_SCHEMA)).load()
+        conf = GeneralConfig(schema)
         self.storage = DataBaseProvider(conf)
 
     async def store_event(self, entity, entity_id, component, component_id,
