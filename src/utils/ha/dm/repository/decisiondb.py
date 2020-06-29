@@ -24,6 +24,7 @@ from eos.utils.data.access.filters import Compare
 from eos.utils.data.db.db_provider import DataBaseProvider, GeneralConfig
 from eos.utils.ha.dm.models.decisiondb import DecisionModel
 from eos.utils.log import Log
+from eos.utils.schema import database
 
 class DecisionDB:
     """
@@ -32,9 +33,17 @@ class DecisionDB:
     """
 
     def __init__(self) -> None:
-        schema = Json(os.path.join(const.CONF_PATH,
+        """
+        Init load consul db for storing key in db
+        if cortx-ha database.json not available then it load
+        database.py schama having localhost consul.
+        """
+        if os.path.exists(os.path.join(const.CONF_PATH, const.HA_DATABADE_SCHEMA)):
+            schema = Json(os.path.join(const.CONF_PATH,
                                    const.HA_DATABADE_SCHEMA)).load()
-        conf = GeneralConfig(schema)
+            conf = GeneralConfig(schema)
+        else:
+            conf = GeneralConfig(database.DATABASE)
         self.storage = DataBaseProvider(conf)
 
     async def store_event(self, entity, entity_id, component, component_id,
