@@ -33,7 +33,7 @@ with open('README.md', 'r') as rf:
     long_description = rf.read()
 
 setup(name='eos-py-utils',
-      version='0.3',
+      version='1.0.0',
       url='http://gitlab.mero.colo.seagate.com/eos/py-utils',
       license='Seagate',
       author='Alexander Voronov',
