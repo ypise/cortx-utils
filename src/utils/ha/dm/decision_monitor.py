@@ -110,7 +110,7 @@ class DecisionMonitor:
             return Action.RESOLVED
         return Action.OK
 
-    def acknowledge_resource(self, resource):
+    def acknowledge_resource(self, resource, force=False):
         """
         Acknowledge a Single Resource Group.
         :param resource:
@@ -119,7 +119,7 @@ class DecisionMonitor:
         Log.debug(f"Received Acknowledge Request for resource {resource}")
         resource_key = self._resource_file.get("resources", {}).get(resource, {})
         try:
-            if not self.get_resource_status(resource) == Action.FAILED:
+            if force or not self.get_resource_status(resource) == Action.FAILED:
                 self._loop.run_until_complete(
                     self._consul_call.delete(**resource_key))
         except Exception as e:
