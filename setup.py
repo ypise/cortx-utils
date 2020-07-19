@@ -46,7 +46,9 @@ setup(name='eos-py-utils',
                 'eos.utils.security', 'eos.utils.schema', 'eos.utils.ha.hac',
                 'eos.utils.ha.dm', 'eos.utils.ha.dm.models',
                 'eos.utils.ha.dm.repository',
-                'eos.utils.ha'],
+                'eos.utils.ha',
+                'eos.utils.amqp', 'eos.utils.amqp.rabbitmq'
+                ],
       package_data={
         'eos': ['py.typed'],
       },
