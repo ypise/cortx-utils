@@ -46,7 +46,7 @@ setup(name='eos-py-utils',
                 'eos.utils.security', 'eos.utils.schema', 'eos.utils.ha.hac',
                 'eos.utils.ha.dm', 'eos.utils.ha.dm.models',
                 'eos.utils.ha.dm.repository',
-                'eos.utils.ha'],
+                'eos.utils.ha', 'eos.utils.cron'],
       package_data={
         'eos': ['py.typed'],
       },
