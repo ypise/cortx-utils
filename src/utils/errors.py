@@ -96,3 +96,7 @@ class MalformedConfigurationError(DataAccessError):
 class StorageNotFoundError(DataAccessError):
 
     """Model object is not associated with any storage"""
+
+class AmqpConnectionError(Exception):
+
+    """Amqp connection problems"""
