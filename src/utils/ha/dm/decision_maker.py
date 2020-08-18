@@ -69,8 +69,8 @@ class RuleEngine(object):
         """
         Log.debug(f"Evaluating alert: {alert}")
         action = None
-        component_id = ""
-        module_id = ""
+        component_var = ""
+        module_var = ""
         if not self._rules_schema:
             return action
         sensor_response = alert.get(const.MESSAGE).get(const.SENSOR_RES_TYPE)
@@ -81,23 +81,23 @@ class RuleEngine(object):
         severity = sensor_response.get(const.SEVERITY)
         """
         In case of IEM alerts for fetching the rules we will have to make use
-        of two additional fields
-        1. componenet id
-        2. module id.
+        of two additional fields:
+        1. component_id
+        2. module_id
         """
         if res_type == const.IEM:
-            component_id = sensor_response.get(const.SPECIFIC_INFO).get\
-                (const.COMPONENT_ID)
-            module_id = sensor_response.get(const.SPECIFIC_INFO).get\
-                (const.MODULE_ID)
+            component_var = sensor_response.get(const.SPECIFIC_INFO).get\
+                (const.SPECIFIC_INFO_COMPONENT)
+            module_var = sensor_response.get(const.SPECIFIC_INFO).get\
+                (const.SPECIFIC_INFO_MODULE)
         res_type_data = self._rules_schema[res_type]
         if res_type_data is not None:
             for item in res_type_data:
                 if alert_type == item[const.ALERT_TYPE] and \
                     severity == item[const.SEVERITY]:
                     if res_type == const.IEM:
-                        if component_id == item[const.COMPONENT_ID] and \
-                            module_id == item[const.MODULE_ID]:
+                        if component_var == item[const.COMPONENT_ID] and \
+                            module_var == item[const.MODULE_ID]:
                             action = item[const.ACTION]
                     else:
                         action = item[const.ACTION]
@@ -208,11 +208,11 @@ class DecisionMaker(object):
         have to hardcode it to node.
         """
         if resource_type == const.IEM:
-            component_id = sensor_response.get(const.SPECIFIC_INFO).get\
-                (const.COMPONENT_ID)
+            component_var = sensor_response.get(const.SPECIFIC_INFO).get\
+                (const.SPECIFIC_INFO_COMPONENT)
             info_dict[const.ENTITY] = const.NODE
             info_dict[const.COMPONENT] = resource_type
-            info_dict[const.COMPONENT_ID] = component_id
+            info_dict[const.COMPONENT_ID] = component_var
         else:
             info_dict[const.ENTITY] = res_list[0]
 
