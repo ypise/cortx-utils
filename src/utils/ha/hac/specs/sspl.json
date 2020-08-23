@@ -14,10 +14,10 @@
                 "relation" : []
             },
             "ha": {
-                "mode": "master_slave",
+                "mode": "primary_secondary",
                 "clones" : {
                     "active": [ 1, 2 ],
-                    "master": [ 1, 1 ]
+                    "primary": [ 1, 1 ]
                 },
                 "location": {
                     "${HA_nodes_eosnode1}": "INFINITY",
