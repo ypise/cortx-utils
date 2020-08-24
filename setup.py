@@ -49,7 +49,7 @@ setup(name='eos-py-utils',
                 'eos.utils.ha',
                 'eos.utils.amqp', 'eos.utils.amqp.rabbitmq',
                 'eos.utils.message_bus','eos.utils.message_bus.tcp',
-                'eos.utils.tcp.message_bus.kafka'
+                'eos.utils.message_bus.tcp.kafka'
                 ],
       package_data={
         'eos': ['py.typed'],
