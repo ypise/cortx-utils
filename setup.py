@@ -47,7 +47,9 @@ setup(name='eos-py-utils',
                 'eos.utils.ha.dm', 'eos.utils.ha.dm.models',
                 'eos.utils.ha.dm.repository',
                 'eos.utils.ha',
-                'eos.utils.amqp', 'eos.utils.amqp.rabbitmq'
+                'eos.utils.amqp', 'eos.utils.amqp.rabbitmq',
+                'eos.utils.message_bus','eos.utils.message_bus.tcp',
+                'eos.utils.tcp.message_bus.kafka'
                 ],
       package_data={
         'eos': ['py.typed'],
@@ -64,4 +66,5 @@ setup(name='eos-py-utils',
       python_requires='>=3.6.8',
       install_requires=['cryptography==2.8', 'schematics==2.1.0', 'toml==0.10.0',
                         'PyYAML==5.1.2', 'configparser==4.0.2', 'networkx==2.4',
-                        'matplotlib==3.1.3', 'argparse==1.4.0'])
+                        'matplotlib==3.1.3', 'argparse==1.4.0',
+                        'confluent-kafka==1.5.0'])
