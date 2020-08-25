@@ -84,7 +84,7 @@ class SyntaxValidator(Validator):
 
     def _validate_mode(self):
         """
-        Validate mode for HA, It should be one of active_active, active_passive, master_slave
+        Validate mode for HA, It should be one of active_active, active_passive, primary_secondary
         Validate clone for mode of resources
         """
         for component in self._schema.keys():

@@ -106,7 +106,7 @@ class PCSGenerator(Generator):
         self._mode = {
             "active_passive": self._create_resource_active_passive,
             "active_active" : self._create_resource_active_active,
-            "master_slave": self._create_resource_master_slave
+            "primary_secondary": self._create_resource_primary_secondary
         }
 
     def create_script(self):
@@ -150,10 +150,10 @@ class PCSGenerator(Generator):
         self._active_active = Template("echo $$pcs_status | grep -q $resource || "+
             "pcs -f $cluster_cfg resource clone $resource "+
             "clone-max=$clone_max clone-node-max=$clone_node_max $param")
-        self._master_slave = Template("echo $$pcs_status | grep -q $resource || "+
-            "pcs -f $cluster_cfg resource master $master "+
+        self._primary_secondary = Template("echo $$pcs_status | grep -q $resource || "+
+            "pcs -f $cluster_cfg resource master $primary "+
             "$resource clone-max=$clone_max clone-node-max=$clone_node_max "+
-            "master-max=$master_max master-node-max=$master_node_max $param")
+            "master-max=$primary_max master-node-max=$primary_node_max $param")
         self._location = Template("echo $$pcs_location | grep -q $resource || "+
             "pcs -f $cluster_cfg constraint location $resource prefers $node=$score")
         self._order = Template("echo $$pcs_status | grep -q 'start $res1 then start $res2' || "+
@@ -230,24 +230,24 @@ class PCSGenerator(Generator):
         with open(self._script, "a") as f:
             f.writelines(clone+ "\n")
 
-    def _create_resource_master_slave(self, res):
+    def _create_resource_primary_secondary(self, res):
         params = ""
         if "parameters" in self._resource_set[res]["ha"]["clones"].keys():
             for parameter in self._resource_set[res][res]["ha"]["clones"]["parameters"].keys():
                 params = params + parameter+ "=" +self._resource_set[res]["ha"]["clones"]["parameters"][parameter]
                 params = params + " "
-        master = self._master_slave.substitute(
+        primary = self._primary_secondary.substitute(
             cluster_cfg=self._cluster_cfg,
-            master=res+"_Master",
+            primary=res+"_Primary",
             resource=res,
             clone_max=self._resource_set[res]["ha"]["clones"]["active"][1],
             clone_node_max=self._resource_set[res]["ha"]["clones"]["active"][0],
-            master_max=self._resource_set[res]["ha"]["clones"]["master"][1],
-            master_node_max=self._resource_set[res]["ha"]["clones"]["master"][0],
+            primary_max=self._resource_set[res]["ha"]["clones"]["primary"][1],
+            primary_node_max=self._resource_set[res]["ha"]["clones"]["primary"][0],
             param=params
         )
         with open(self._script, "a") as f:
-            f.writelines(master+ "\n")
+            f.writelines(primary+ "\n")
 
     def _get_clone_name(self, resource):
         """
@@ -256,7 +256,7 @@ class PCSGenerator(Generator):
         res_name = ""
         mode = self._resource_set[resource]["ha"]["mode"]
         if mode != "active_passive":
-            res_name = resource + ("-clone" if mode == "active_active" else "_Master")
+            res_name = resource + ("-clone" if mode == "active_active" else "_Primary")
         else:
             res_name = resource
         return res_name

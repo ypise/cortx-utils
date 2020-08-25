@@ -98,26 +98,26 @@
 
                 # Mode:
                 # HA failover mode. It can be one of the following:
-                # "active_passive", "active_active", "master_slave"
+                # "active_passive", "active_active", "primary_secondary"
                 "mode": "<HA mode>",
 
                 # Clone Information:
-                # Required only for Active-Active and Master-Slave
+                # Required only for Active-Active and Primary-Secondary
                 "clones" : {
 
                     # Active Count:
-                    # Only if resource is active_active and master_slave
-                    # Max no. of process/master instance running on node/cluster
+                    # Only if resource is active_active and primary_secondary
+                    # Max no. of process/primary instance running on node/cluster
                     # - max-clone-on-node: how many instances can be run on same node
                     # - total-clone: how many total instances can be run on the cluster
                     "active": ["<max-clone-on-node>", "<total-clone>"],
 
-                    # Master Count
-                    # - max-master-on-node: how many master can be run on same node
-                    # - total-master: how many total master can be run on the cluster
-                    "master": ["<max-master-on-node>", "<total-master>"],
+                    # Primary Count
+                    # - max-primary-on-node: how many primary can be run on same node
+                    # - total-primary: how many total primary can be run on the cluster
+                    "primary": ["<max-primary-on-node>", "<total-primary>"],
 
-                    # Pamaters:
+                    # Parameters:
                     # Parameters to be used for clone instances, if any
                     "parameters": {
                         "<key1>": "<value1>",
