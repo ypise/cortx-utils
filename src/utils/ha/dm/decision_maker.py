@@ -181,7 +181,7 @@ class DecisionMaker(object):
         2. HA/Enclosure/0/controller/2/timestamp
         3. HA/Enclosure/0/fan/0/timestamp
         4. HA/Node/1/raid/0/timestamp
-        5. HA/Node/0/IEM/mero/timestamp
+        5. HA/Node/0/IEM/motr/timestamp
         6. HA/Node/1/IEM/s3/timestamp
         """
         info_dict = dict()

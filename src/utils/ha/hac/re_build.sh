@@ -17,7 +17,7 @@ hac --generate /var/lib/eos/ha/compiled.json  --output /var/lib/eos/ha/script/ln
 
 hac --generate /var/lib/eos/ha/compiled.json  --output /var/lib/eos/ha/script/hax_c1_c2.sh --args /var/lib/eos/ha/args.yaml --resources "hax-c1 hax-c2"
 
-hac --generate /var/lib/eos/ha/compiled.json  --output /var/lib/eos/ha/script/mero_iso_c1_c2.sh --args /var/lib/eos/ha/args.yaml --resources "mero-ios-c1 mero-ios-c2"
+hac --generate /var/lib/eos/ha/compiled.json  --output /var/lib/eos/ha/script/motr_iso_c1_c2.sh --args /var/lib/eos/ha/args.yaml --resources "motr-ios-c1 motr-ios-c2"
 
 hac --generate /var/lib/eos/ha/compiled.json  --output /var/lib/eos/ha/script/s3auth.sh --args /var/lib/eos/ha/args.yaml --resources "s3auth"
 

@@ -24,11 +24,11 @@ HA:
         lnet2:
             iface: "$3"
             nettype: "$4"
-        mero:
-            meroconfc1: $(python3 -c "import json; print([v['checks'][0]['args'][2] for v in json.load(open('/var/lib/hare/consul-server-c1-conf.json', 'r'))['services'] if v['name'] == 'confd'][0])")
-            meroconfc2: $(python3 -c "import json; print([v['checks'][0]['args'][2] for v in json.load(open('/var/lib/hare/consul-server-c1-conf.json', 'r'))['services'] if v['name'] == 'confd'][0])")
-            meroiosc1: $(python3 -c "import json; print([v['checks'][0]['args'][2] for v in json.load(open('/var/lib/hare/consul-server-c1-conf.json', 'r'))['services'] if v['name'] == 'ios'][0])")
-            meroiosc2: $(python3 -c "import json; print([v['checks'][0]['args'][2] for v in json.load(open('/var/lib/hare/consul-server-c1-conf.json', 'r'))['services'] if v['name'] == 'ios'][0])")
+        motr:
+            motrconfc1: $(python3 -c "import json; print([v['checks'][0]['args'][2] for v in json.load(open('/var/lib/hare/consul-server-c1-conf.json', 'r'))['services'] if v['name'] == 'confd'][0])")
+            motrconfc2: $(python3 -c "import json; print([v['checks'][0]['args'][2] for v in json.load(open('/var/lib/hare/consul-server-c1-conf.json', 'r'))['services'] if v['name'] == 'confd'][0])")
+            motriosc1: $(python3 -c "import json; print([v['checks'][0]['args'][2] for v in json.load(open('/var/lib/hare/consul-server-c1-conf.json', 'r'))['services'] if v['name'] == 'ios'][0])")
+            motriosc2: $(python3 -c "import json; print([v['checks'][0]['args'][2] for v in json.load(open('/var/lib/hare/consul-server-c1-conf.json', 'r'))['services'] if v['name'] == 'ios'][0])")
         s3:
             s3server1c1: $(python3 -c "import json; print([v['checks'][0]['args'][2] for v in json.load(open('/var/lib/hare/consul-server-c1-conf.json', 'r'))['services'] if v['name'] == 's3service'][0])")
             s3server1c2: $(python3 -c "import json; print([v['checks'][0]['args'][2] for v in json.load(open('/var/lib/hare/consul-server-c1-conf.json', 'r'))['services'] if v['name'] == 's3service'][1])")

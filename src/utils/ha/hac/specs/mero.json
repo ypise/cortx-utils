@@ -1,10 +1,10 @@
 {
-    "mero": {
-        "mero-kernel": {
+    "motr": {
+        "motr-kernel": {
             "group": "io",
             "provider": {
-                "name": "systemd:mero-kernel",
-                "service": "mero-kernel",
+                "name": "systemd:motr-kernel",
+                "service": "motr-kernel",
                 "interval": "10s",
                 "timeouts": [ "10s", "10s", "10s" ]
             },
@@ -24,11 +24,11 @@
                 }
             }
         },
-        "mero-confd-c1": {
+        "motr-confd-c1": {
             "group": "io",
             "provider": {
-                "name": "systemd:m0d@${HA_io_mero_meroconfc1}",
-                "service": "m0d@${HA_io_mero_meroconfc1}",
+                "name": "systemd:m0d@${HA_io_motr_motrconfc1}",
+                "service": "m0d@${HA_io_motr_motrconfc1}",
                 "interval": "30s",
                 "timeouts": [ "600s", "600s", "600s" ]
             },
@@ -45,10 +45,10 @@
                 }
             }
         },
-        "mero-confd-c2": {
+        "motr-confd-c2": {
             "group": "io",
             "provider": {
-                "name": "systemd:m0d@${HA_io_mero_meroconfc2}",
+                "name": "systemd:m0d@${HA_io_motr_motrconfc2}",
                 "service": "m0d",
                 "interval": "30s",
                 "timeouts": [ "600s", "600s", "600s" ]
@@ -66,17 +66,17 @@
                 }
             }
         },
-        "mero-ios-c1": {
+        "motr-ios-c1": {
             "group": "io",
             "provider": {
-                "name": "systemd:m0d@${HA_io_mero_meroiosc1}",
-                "service": "mero_ios_c1",
+                "name": "systemd:m0d@${HA_io_motr_motriosc1}",
+                "service": "motr_ios_c1",
                 "interval": "600s",
                 "timeouts": [ "600s", "600s", "600s" ]
             },
             "dependencies": {
-                "predecessors" : ["mero-confd-c1", "mero-confd-c2"],
-                "colocation" : ["mero-confd-c1"],
+                "predecessors" : ["motr-confd-c1", "motr-confd-c2"],
+                "colocation" : ["motr-confd-c1"],
                 "relation" : []
             },
             "ha": {
@@ -87,17 +87,17 @@
                 }
             }
         },
-        "mero-ios-c2": {
+        "motr-ios-c2": {
             "group": "io",
             "provider": {
-                "name": "systemd:m0d@${HA_io_mero_meroiosc2}",
-                "service": "mero_ios_c2",
+                "name": "systemd:m0d@${HA_io_motr_motriosc2}",
+                "service": "motr_ios_c2",
                 "interval": "600s",
                 "timeouts": [ "600s", "600s", "600s" ]
             },
             "dependencies": {
-                "predecessors" : ["mero-confd-c1", "mero-confd-c2"],
-                "colocation" : ["mero-confd-c2"],
+                "predecessors" : ["motr-confd-c1", "motr-confd-c2"],
+                "colocation" : ["motr-confd-c2"],
                 "relation" : []
             },
             "ha": {

@@ -9,7 +9,7 @@
                 "timeouts": [ "10s", "10s", "10s" ]
             },
             "dependencies": {
-                "predecessors" : ["s3auth", "mero-ios-c1"],
+                "predecessors" : ["s3auth", "motr-ios-c1"],
                 "colocation" : [],
                 "relation" : []
             },
@@ -30,7 +30,7 @@
                 "timeouts": [ "10s", "10s", "10s" ]
             },
             "dependencies": {
-                "predecessors" : ["s3auth", "mero-ios-c1"],
+                "predecessors" : ["s3auth", "motr-ios-c1"],
                 "colocation" : [],
                 "relation" : []
             },
@@ -51,7 +51,7 @@
                 "timeouts": [ "10s", "10s", "10s" ]
             },
             "dependencies": {
-                "predecessors" : ["s3auth", "mero-ios-c1"],
+                "predecessors" : ["s3auth", "motr-ios-c1"],
                 "colocation" : [],
                 "relation" : []
             },
@@ -72,7 +72,7 @@
                 "timeouts": [ "10s", "10s", "10s" ]
             },
             "dependencies": {
-                "predecessors" : ["s3auth", "mero-ios-c1"],
+                "predecessors" : ["s3auth", "motr-ios-c1"],
                 "colocation" : [],
                 "relation" : []
             },
@@ -93,7 +93,7 @@
                 "timeouts": [ "10s", "10s", "10s" ]
             },
             "dependencies": {
-                "predecessors" : ["s3auth", "mero-ios-c1"],
+                "predecessors" : ["s3auth", "motr-ios-c1"],
                 "colocation" : [],
                 "relation" : []
             },
@@ -114,7 +114,7 @@
                 "timeouts": [ "10s", "10s", "10s" ]
             },
             "dependencies": {
-                "predecessors" : ["s3auth", "mero-ios-c1"],
+                "predecessors" : ["s3auth", "motr-ios-c1"],
                 "colocation" : [],
                 "relation" : []
             },
@@ -135,7 +135,7 @@
                 "timeouts": [ "10s", "10s", "10s" ]
             },
             "dependencies": {
-                "predecessors" : ["s3auth", "mero-ios-c1"],
+                "predecessors" : ["s3auth", "motr-ios-c1"],
                 "colocation" : [],
                 "relation" : []
             },
@@ -156,7 +156,7 @@
                 "timeouts": [ "10s", "10s", "10s" ]
             },
             "dependencies": {
-                "predecessors" : ["s3auth", "mero-ios-c1"],
+                "predecessors" : ["s3auth", "motr-ios-c1"],
                 "colocation" : [],
                 "relation" : []
             },
@@ -177,7 +177,7 @@
                 "timeouts": [ "10s", "10s", "10s" ]
             },
             "dependencies": {
-                "predecessors" : ["s3auth", "mero-ios-c1"],
+                "predecessors" : ["s3auth", "motr-ios-c1"],
                 "colocation" : [],
                 "relation" : []
             },
@@ -198,7 +198,7 @@
                 "timeouts": [ "10s", "10s", "10s" ]
             },
             "dependencies": {
-                "predecessors" : ["s3auth", "mero-ios-c1"],
+                "predecessors" : ["s3auth", "motr-ios-c1"],
                 "colocation" : [],
                 "relation" : []
             },
@@ -219,7 +219,7 @@
                 "timeouts": [ "10s", "10s", "10s" ]
             },
             "dependencies": {
-                "predecessors" : ["s3auth", "mero-ios-c1"],
+                "predecessors" : ["s3auth", "motr-ios-c1"],
                 "colocation" : [],
                 "relation" : []
             },
@@ -240,7 +240,7 @@
                 "timeouts": [ "10s", "10s", "10s" ]
             },
             "dependencies": {
-                "predecessors" : ["s3auth", "mero-ios-c2"],
+                "predecessors" : ["s3auth", "motr-ios-c2"],
                 "colocation" : [],
                 "relation" : []
             },
@@ -261,7 +261,7 @@
                 "timeouts": [ "10s", "10s", "10s" ]
             },
             "dependencies": {
-                "predecessors" : ["s3auth", "mero-ios-c2"],
+                "predecessors" : ["s3auth", "motr-ios-c2"],
                 "colocation" : [],
                 "relation" : []
             },
@@ -282,7 +282,7 @@
                 "timeouts": [ "10s", "10s", "10s" ]
             },
             "dependencies": {
-                "predecessors" : ["s3auth", "mero-ios-c2"],
+                "predecessors" : ["s3auth", "motr-ios-c2"],
                 "colocation" : [],
                 "relation" : []
             },
@@ -303,7 +303,7 @@
                 "timeouts": [ "10s", "10s", "10s" ]
             },
             "dependencies": {
-                "predecessors" : ["s3auth", "mero-ios-c2"],
+                "predecessors" : ["s3auth", "motr-ios-c2"],
                 "colocation" : [],
                 "relation" : []
             },
@@ -324,7 +324,7 @@
                 "timeouts": [ "10s", "10s", "10s" ]
             },
             "dependencies": {
-                "predecessors" : ["s3auth", "mero-ios-c2"],
+                "predecessors" : ["s3auth", "motr-ios-c2"],
                 "colocation" : [],
                 "relation" : []
             },
@@ -345,7 +345,7 @@
                 "timeouts": [ "10s", "10s", "10s" ]
             },
             "dependencies": {
-                "predecessors" : ["s3auth", "mero-ios-c2"],
+                "predecessors" : ["s3auth", "motr-ios-c2"],
                 "colocation" : [],
                 "relation" : []
             },
@@ -366,7 +366,7 @@
                 "timeouts": [ "10s", "10s", "10s" ]
             },
             "dependencies": {
-                "predecessors" : ["s3auth", "mero-ios-c2"],
+                "predecessors" : ["s3auth", "motr-ios-c2"],
                 "colocation" : [],
                 "relation" : []
             },
@@ -387,7 +387,7 @@
                 "timeouts": [ "10s", "10s", "10s" ]
             },
             "dependencies": {
-                "predecessors" : ["s3auth", "mero-ios-c2"],
+                "predecessors" : ["s3auth", "motr-ios-c2"],
                 "colocation" : [],
                 "relation" : []
             },
@@ -408,7 +408,7 @@
                 "timeouts": [ "10s", "10s", "10s" ]
             },
             "dependencies": {
-                "predecessors" : ["s3auth", "mero-ios-c2"],
+                "predecessors" : ["s3auth", "motr-ios-c2"],
                 "colocation" : [],
                 "relation" : []
             },
@@ -429,7 +429,7 @@
                 "timeouts": [ "10s", "10s", "10s" ]
             },
             "dependencies": {
-                "predecessors" : ["s3auth", "mero-ios-c2"],
+                "predecessors" : ["s3auth", "motr-ios-c2"],
                 "colocation" : [],
                 "relation" : []
             },
@@ -450,7 +450,7 @@
                 "timeouts": [ "10s", "10s", "10s" ]
             },
             "dependencies": {
-                "predecessors" : ["s3auth", "mero-ios-c2"],
+                "predecessors" : ["s3auth", "motr-ios-c2"],
                 "colocation" : [],
                 "relation" : []
             },

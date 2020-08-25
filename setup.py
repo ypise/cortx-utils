@@ -34,7 +34,7 @@ with open('README.md', 'r') as rf:
 
 setup(name='eos-py-utils',
       version='1.0.0',
-      url='http://gitlab.mero.colo.seagate.com/eos/py-utils',
+      url='https://github.com/Seagate/cortx-py-utils',
       license='Seagate',
       author='Alexander Voronov',
       author_email='alexander.voronov@seagate.com',

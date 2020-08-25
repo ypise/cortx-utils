@@ -9,7 +9,7 @@
                 "timeouts": [ "10s", "10s", "10s" ]
             },
             "dependencies": {
-                "predecessors" : ["mero-kernel", "consul-c1"],
+                "predecessors" : ["motr-kernel", "consul-c1"],
                 "colocation" : [],
                 "relation" : []
             },
@@ -30,7 +30,7 @@
                 "timeouts": [ "10s", "10s", "10s" ]
             },
             "dependencies": {
-                "predecessors" : ["mero-kernel", "consul-c2"],
+                "predecessors" : ["motr-kernel", "consul-c2"],
                 "colocation" : [],
                 "relation" : []
             },
