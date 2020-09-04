@@ -17,7 +17,7 @@
 from eos.utils.message_bus.comm import Channel, Comm
 from confluent_kafka import Producer, Consumer, KafkaException
 from eos.utils.message_bus.error import SendError, ConnectionEstError,MsgFetchError, \
-    OperationSuccessful
+    OperationSuccessful, DisconnectError, CommitError
 import uuid
 from eos.utils.log import Log
 import time
@@ -179,6 +179,7 @@ class KafkaConsumerChannel(Channel):
                     'group.id' : self._group_id,
                     'group.instance.id' : self._consumer_name,
                     'isolation.level' : 'read_committed',
+                    'auto.offset.reset' : 'earliest',
                     'enable.auto.commit' : False}
             self._channel = Consumer(conf)
             Log.info(f"message bus consumer Channel initialized. Group : {self._group_id}")
@@ -186,9 +187,12 @@ class KafkaConsumerChannel(Channel):
             Log.error(f"Unable to connect to message bus broker. {ex}")
             raise ConnectionEstError(f"Unable to connect to message bus broker. {ex}")
 
-    @classmethod
     def disconnect(self):
-        raise Exception('recv not implemented for Kafka consumer Channel')
+        try:
+            self._channel.close()
+        except Exception as ex:
+            Log.error(f"Closing consumer channel failed. {ex}")
+            raise DisconnectError(f"Unable to close the consumer. {ex}")
 
     @classmethod
     def recv(self, message=None):
@@ -209,9 +213,12 @@ class KafkaConsumerChannel(Channel):
     def send_file(self, local_file, remote_file):
         raise Exception('send_file not implemented for Kafka consumer Channel')
 
-    @classmethod
     def acknowledge(self, delivery_tag=None):
-        raise Exception('send_file not implemented for Kafka consumer Channel')
+        try:
+            self._channel.commit()
+        except Exception as ex:
+            Log.error(f"Receive commit failed. {ex}")
+            raise CommitError(f"Unable to complete commit operation. {ex}")
 
 class KafkaProducerComm(Comm):
     def __init__(self, **kwargs):
@@ -271,10 +278,9 @@ class KafkaConsumerComm(Comm):
     def send(self, message, **kwargs):
         raise Exception('send not implemented for KafkaConsumer Comm')
 
-    @classmethod
     def acknowledge(self):
         if self._inChannel is not None:
-            self._inChannel.commit()
+            self._inChannel.acknowledge()
             return OperationSuccessful("Commit operation successfull.")
         else:
             Log.error("Unable to connect to message bus broker.")
@@ -286,24 +292,20 @@ class KafkaConsumerComm(Comm):
 
     def recv(self, callback_fn=None, message=None, **kwargs):
         if self._inChannel is not None:
-            self._inChannel.channel().subscribe(kwargs.get(const.TOPIC))
-            msg = self._inChannel.channel().poll(1.0)
-            if msg is None:
-                Log.warn("No message fetched from kafka broker.")
-                return msg
-            if msg.error():
-                Log.error(f"Fetching message from kafka broker failed. {msg.error()}")
-                raise MsgFetchError(f"No message fetched from kafka broker. {msg.error()}")
-            Log.info(f"Received message: {msg.value().decode('utf-8')}")
+            try:
+                self._inChannel.channel().subscribe(kwargs.get(const.TOPIC))
+                msg_list = self._inChannel.channel().consume(num_messages=100, timeout=1.0)
+            except Exception as ex:
+                Log.error(f"Fetching message from kafka broker failed. {ex}")
+                raise MsgFetchError(f"No message fetched from kafka broker. {ex}")
         else:
             Log.error("Unable to connect to message bus broker.")
             raise ConnectionEstError("Unable to connect to message bus broker.")
-        return msg.value().decode('utf-8')
+        return [msg.value().decode('utf-8') for msg in msg_list]
 
-    @classmethod
     def disconnect(self):
         if self._inChannel is not None:
-            self._inChannel.close()
+            self._inChannel.disconnect()
             return OperationSuccessful("Close operation successfull.")
         else:
             Log.error("Unable to connect to message bus broker.")

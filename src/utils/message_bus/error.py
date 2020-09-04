@@ -25,6 +25,8 @@ INVALID_CONFIG          = 0x1003
 SEND_ERROR              = 0x1004
 MSG_FETCH_ERROR         = 0x1005
 NO_MSG_ERROR            = 0x1006
+COMMIT_ERROR            = 0x1007
+DISCONNECT_ERROR        = 0x1008
 
 class MessagebusError(BaseError):
     """
@@ -106,3 +108,27 @@ class MsgFetchError(MessagebusError):
     def __init__(self, _desc=None, message_id=None, message_args=None):
         super(MsgFetchError, self).__init__(
             MSG_FETCH_ERROR, _desc, message_id, message_args)
+
+class DisconnectError(MessagebusError):
+    """
+    This error will be raised when disconnecting consumer operation failed.
+    """
+
+    _err = DISCONNECT_ERROR
+    _desc = "MessagebusError: Error occured in disconnecting."
+
+    def __init__(self, _desc=None, message_id=None, message_args=None):
+        super(DisconnectError, self).__init__(
+            DISCONNECT_ERROR, _desc, message_id, message_args)
+
+class CommitError(MessagebusError):
+    """
+    This error will be raised when receive commit is failed.
+    """
+
+    _err = COMMIT_ERROR
+    _desc = "MessagebusError: Error occured in receive commit."
+
+    def __init__(self, _desc=None, message_id=None, message_args=None):
+        super(CommitError, self).__init__(
+            COMMIT_ERROR, _desc, message_id, message_args)
