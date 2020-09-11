@@ -22,7 +22,7 @@ from eos.utils import const
 from eos.utils.log import Log
 from eos.utils.schema import database
 from eos.utils.schema.payload import Json
-from eos.utils.product_features.model import UnsupportedFeaturesModel
+from eos.utils.product_features import model
 
 class UnsupportedFeaturesDB:
     def __init__(self) -> None:
@@ -38,15 +38,15 @@ class UnsupportedFeaturesDB:
         :return:
         """
         # Generate Key
-        feature_id = UnsupportedFeaturesModel.create_feature_id(component_name,
+        feature_id = model.UnsupportedFeaturesModel.create_feature_id(component_name,
                                                                 const.UNSUPPORTED_FEATURE,
                                                                 feature_name)
         # Generate unsupported_features DB Object.
-        feature = UnsupportedFeaturesModel.instantiate_decision(feature_id,
+        feature = model.UnsupportedFeaturesModel.instantiate_decision(feature_id,
                                                                 feature_name,
                                                                 component_name)
         # Save Data.
-        await self.storage(UnsupportedFeaturesModel).store(feature)
+        await self.storage(model.UnsupportedFeaturesModel).store(feature)
 
     async def get_unsupported_features(self, component_name = "",
         feature_name = ""):
@@ -62,12 +62,12 @@ class UnsupportedFeaturesDB:
         # Generate Key
         if component_name:
             query.filter_by(Compare(
-                UnsupportedFeaturesModel.component_name, "=", component_name))
+                model.UnsupportedFeaturesModel.component_name, "=", component_name))
             if feature_name:
                 query.filter_by(And(Compare(
-                    UnsupportedFeaturesModel.feature_name, "=", feature_name)))
+                    model.UnsupportedFeaturesModel.feature_name, "=", feature_name)))
 
-        feature_details = await self.storage(UnsupportedFeaturesModel).get(
+        feature_details = await self.storage(model.UnsupportedFeaturesModel).get(
             query)
         if not feature_details:
             return []
@@ -80,12 +80,12 @@ class UnsupportedFeaturesDB:
         :param feature_name: Name of Feature :type: String
         :return: Supported -> True/Not-Supported -> False
         """
-        feature_id = UnsupportedFeaturesModel.create_feature_id(
+        feature_id = model.UnsupportedFeaturesModel.create_feature_id(
             *(component_name, const.UNSUPPORTED_FEATURE, feature_name))
         # Create Query
         query = Query().filter_by(
-            Compare(UnsupportedFeaturesModel.feature_id, '=', feature_id))
-        feature = await self.storage(UnsupportedFeaturesModel).get(query)
+            Compare(model.UnsupportedFeaturesModel.feature_id, '=', feature_id))
+        feature = await self.storage(model.UnsupportedFeaturesModel).get(query)
         if feature:
             return False
         return True
