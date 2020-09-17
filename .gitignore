@@ -7,3 +7,9 @@ tags
 TAGS
 src/build/*.pc
 src/build/*.spec
+py-utils/build
+py-utils/dist
+py-utils/*.egg-info
+__pycache__
+py-utils/.idea
+py-utils/.vscode
