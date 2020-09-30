@@ -25,12 +25,14 @@ class CronJob:
     Class to Schedule Cron Jobs
     """
 
-    def __init__(self, user):
+    def __init__(self, user=True):
         try:
             self._cron = CronTab(user=user)
         except OSError as e:
             Log.error(f"Cron User Error : {e}")
             self._cron = None
+        except Exception as e:
+            Log.error(f"Cron Error : {e}")
 
     def create_run_time(self, days=0, seconds=0, microseconds=0, milliseconds=0, minutes=0, hours=0, weeks=0):
         """
